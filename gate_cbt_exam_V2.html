@@ -1,0 +1,2245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GATE 2025 - Computer Based Test</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; font-size: 13px; background: #f0f0f0; color: #000; user-select: none; }
+
+  /* ── TOP HEADER ── */
+  #header {
+    background: linear-gradient(180deg, #1a3e6e 0%, #1a3e6e 60%, #c8a000 100%);
+    color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 12px; height: 72px;
+  }
+  #header .left { display: flex; align-items: center; gap: 12px; }
+  #header img.logo { height: 56px; width: 56px; background: #fff; border-radius: 4px; padding: 2px; }
+  #header .exam-title { line-height: 1.4; }
+  #header .exam-title h1 { font-size: 15px; font-weight: bold; letter-spacing: .5px; }
+  #header .exam-title p { font-size: 11px; color: #ddd; }
+  #header .right { text-align: right; font-size: 11px; line-height: 1.6; }
+  #header .right strong { font-size: 13px; color: #ffe066; }
+
+  /* ── CANDIDATE INFO BAR ── */
+  #info-bar {
+    background: #dce8f5; border-bottom: 1px solid #a0b8d0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 4px 12px; font-size: 12px;
+  }
+  #info-bar span { color: #1a3e6e; }
+  #info-bar strong { color: #c00; }
+
+  /* ── TIMER BAR ── */
+  #timer-bar {
+    background: #1a3e6e; color: #fff;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 5px 12px;
+  }
+  #timer-bar .time-left { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  #timer-bar .time-display {
+    background: #fff; color: #c00; font-size: 16px; font-weight: bold;
+    padding: 3px 10px; border-radius: 3px; min-width: 100px; text-align: center; letter-spacing: 1px;
+  }
+  #timer-bar .section-info { font-size: 12px; color: #cde; }
+
+  /* ── MAIN LAYOUT ── */
+  #main {
+    display: flex; height: calc(100vh - 140px);
+  }
+
+  /* ── QUESTION PANEL ── */
+  #question-panel {
+    flex: 1; display: flex; flex-direction: column;
+    background: #fff; border-right: 2px solid #aaa;
+    overflow: hidden;
+  }
+
+  /* Question header */
+  #q-header {
+    background: #e8f0f8; border-bottom: 1px solid #b0c4d8;
+    padding: 6px 12px; display: flex; justify-content: space-between; align-items: center;
+  }
+  #q-header .q-number { font-weight: bold; font-size: 13px; color: #1a3e6e; }
+  #q-header .q-marks { font-size: 12px; color: #555; }
+  #q-header .q-type-badge {
+    background: #1a3e6e; color: #fff; font-size: 10px;
+    padding: 2px 8px; border-radius: 10px;
+  }
+
+  /* Question body */
+  #q-body {
+    flex: 1; overflow-y: auto; padding: 14px 18px;
+    border-bottom: 1px solid #ccc;
+  }
+  #q-body .section-label {
+    font-size: 11px; color: #888; margin-bottom: 6px;
+    border-bottom: 1px dashed #ccc; padding-bottom: 4px;
+  }
+  #q-body .question-text {
+    font-size: 14px; line-height: 1.7; margin-bottom: 18px; color: #111;
+  }
+  #q-body .question-text .highlight { color: #1a3e6e; font-weight: bold; }
+  #q-body .options { list-style: none; }
+  #q-body .options li {
+    margin-bottom: 10px; display: flex; align-items: flex-start; gap: 10px;
+    padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;
+    transition: background .15s;
+  }
+  #q-body .options li:hover { background: #eef4fb; }
+  #q-body .options li.selected { background: #d0e8ff; border-color: #1a3e6e; }
+  #q-body .options li input[type=radio] { margin-top: 1px; accent-color: #1a3e6e; }
+  #q-body .options li label { cursor: pointer; line-height: 1.5; }
+  #q-body .nat-input {
+    margin-top: 8px;
+  }
+  #q-body .nat-input input {
+    border: 2px solid #1a3e6e; border-radius: 4px; padding: 8px 12px;
+    font-size: 16px; width: 180px; text-align: center; color: #1a3e6e; font-weight: bold;
+  }
+  #q-body .nat-input input:focus { outline: none; border-color: #c8a000; }
+
+  /* ── QUESTION ACTIONS ── */
+  #q-actions {
+    padding: 8px 12px; background: #f5f5f5; border-top: 1px solid #ccc;
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  .btn {
+    padding: 7px 14px; border: none; border-radius: 3px; cursor: pointer;
+    font-size: 12px; font-weight: bold; letter-spacing: .3px;
+    transition: filter .15s;
+  }
+  .btn:hover { filter: brightness(.9); }
+  .btn-save-next { background: #28a745; color: #fff; }
+  .btn-save-mark { background: #6f42c1; color: #fff; }
+  .btn-clear { background: #dc3545; color: #fff; }
+  .btn-mark-review { background: #fd7e14; color: #fff; }
+  .btn-prev { background: #6c757d; color: #fff; }
+  .btn-next { background: #17a2b8; color: #fff; }
+  .btn-submit-final { background: #c00; color: #fff; margin-left: auto; }
+
+  /* ── RIGHT PANEL ── */
+  #right-panel {
+    width: 260px; background: #f9f9f9;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  /* Legend */
+  #legend {
+    background: #1a3e6e; color: #fff; padding: 7px 10px; font-size: 11px;
+    font-weight: bold; letter-spacing: .4px;
+  }
+  #legend-items {
+    padding: 8px 10px; display: flex; flex-wrap: wrap; gap: 6px;
+    border-bottom: 1px solid #ccc; background: #eef2f8;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; white-space: nowrap; }
+  .legend-dot {
+    width: 20px; height: 20px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #fff;
+  }
+  .dot-not-visited { background: #b0b0b0; }
+  .dot-not-answered { background: #dc3545; }
+  .dot-answered { background: #28a745; }
+  .dot-marked { background: #6f42c1; }
+  .dot-answered-marked { background: #6f42c1; border: 2px solid #28a745; }
+
+  /* Section tabs */
+  #section-tabs {
+    display: flex; background: #dce8f5; border-bottom: 2px solid #1a3e6e;
+  }
+  .section-tab {
+    flex: 1; padding: 7px 4px; text-align: center; font-size: 11px;
+    font-weight: bold; cursor: pointer; border-right: 1px solid #aac; color: #1a3e6e;
+    background: #dce8f5; transition: background .15s;
+  }
+  .section-tab:last-child { border-right: none; }
+  .section-tab.active { background: #1a3e6e; color: #fff; }
+
+  /* Question grid */
+  #q-grid-wrap { flex: 1; overflow-y: auto; padding: 10px; }
+  #q-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .q-bubble {
+    width: 32px; height: 32px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-size: 11px;
+    font-weight: bold; cursor: pointer; color: #fff;
+    transition: transform .1s;
+  }
+  .q-bubble:hover { transform: scale(1.15); }
+  .q-bubble.not-visited { background: #b0b0b0; }
+  .q-bubble.not-answered { background: #dc3545; }
+  .q-bubble.answered { background: #28a745; }
+  .q-bubble.marked { background: #6f42c1; }
+  .q-bubble.answered-marked {
+    background: #6f42c1;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #28a745;
+  }
+  .q-bubble.current {
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #1a3e6e;
+  }
+
+  /* Candidate photo */
+  #candidate-photo {
+    padding: 8px 10px; border-top: 1px solid #ccc; background: #fff;
+    display: flex; align-items: center; gap: 10px; font-size: 11px;
+  }
+  .photo-box {
+    width: 48px; height: 56px; background: #ccc; border: 1px solid #888;
+    display: flex; align-items: center; justify-content: center; font-size: 9px;
+    color: #555; text-align: center; flex-shrink: 0;
+  }
+  .candidate-details { line-height: 1.6; }
+  .candidate-details strong { color: #1a3e6e; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.55);
+    display: flex; align-items: center; justify-content: center; z-index: 100;
+  }
+  .modal-overlay.hidden { display: none; }
+  .modal {
+    background: #fff; border-radius: 6px; overflow: hidden;
+    width: 480px; box-shadow: 0 8px 32px rgba(0,0,0,.3);
+  }
+  .modal-header {
+    background: #1a3e6e; color: #fff; padding: 12px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-header h3 { font-size: 14px; }
+  .modal-close { cursor: pointer; font-size: 18px; background: none; border: none; color: #fff; }
+  .modal-body { padding: 20px; }
+  .modal-body p { margin-bottom: 10px; font-size: 13px; line-height: 1.6; }
+  .summary-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  .summary-table th, .summary-table td { border: 1px solid #ccc; padding: 7px 10px; text-align: center; font-size: 12px; }
+  .summary-table th { background: #1a3e6e; color: #fff; }
+  .summary-table tr:nth-child(even) { background: #f5f5f5; }
+  .modal-footer { padding: 12px 16px; background: #f5f5f5; border-top: 1px solid #ccc; display: flex; justify-content: flex-end; gap: 8px; }
+
+  /* Instruction screen */
+  #instruction-screen {
+    position: fixed; inset: 0; background: #fff; z-index: 200; overflow-y: auto;
+  }
+  #instruction-screen .inst-header {
+    background: #1a3e6e; color: #fff; padding: 14px 20px;
+    font-size: 15px; font-weight: bold;
+  }
+  #instruction-screen .inst-body { padding: 20px 30px; max-width: 900px; margin: 0 auto; }
+  #instruction-screen h2 { font-size: 14px; color: #1a3e6e; margin: 14px 0 6px; border-bottom: 1px solid #1a3e6e; padding-bottom: 4px; }
+  #instruction-screen p, #instruction-screen li { font-size: 12.5px; line-height: 1.8; margin-bottom: 4px; }
+  #instruction-screen ul { padding-left: 20px; margin-bottom: 10px; }
+  #instruction-screen .inst-legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 10px 0; }
+  #instruction-screen .inst-legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  #instruction-screen .start-btn-wrap { text-align: center; margin-top: 30px; padding-bottom: 30px; }
+  #instruction-screen .btn-start {
+    background: #1a3e6e; color: #fff; padding: 12px 40px; font-size: 15px;
+    border: none; border-radius: 4px; cursor: pointer; font-weight: bold;
+  }
+  #instruction-screen .btn-start:hover { background: #0d2a50; }
+  .inst-table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; font-size: 12px; }
+  .inst-table th, .inst-table td { border: 1px solid #aaa; padding: 6px 10px; }
+  .inst-table th { background: #1a3e6e; color: #fff; }
+  .inst-table tr:nth-child(even) { background: #f0f4fa; }
+
+  /* Scientific Calculator */
+  #calc-modal .modal { width: 390px; }
+  #calc-modal .modal-body { padding: 0; background: #1a1a2e; }
+  .sci-calc { background: linear-gradient(160deg,#1a1a2e,#16213e); padding: 14px; border-radius: 0 0 6px 6px; }
+  .sci-display {
+    background: #0d0d1a; border: 1px solid #2a2a4a; border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 10px; min-height: 72px;
+    font-family: 'Courier New', monospace; text-align: right;
+  }
+  .sci-display .expr-line { font-size: 11px; color: #5a8aaa; min-height: 16px; word-break: break-all; margin-bottom: 4px; }
+  .sci-display .main-line { font-size: 26px; color: #00e5ff; font-weight: bold; word-break: break-all; line-height: 1.2; }
+  .sci-display .mode-line { font-size: 10px; color: #556; margin-top: 4px; text-align: left; letter-spacing: .5px; }
+  .sci-mode-toggle { display: flex; gap: 6px; margin-bottom: 8px; }
+  .sci-mode-toggle button {
+    flex: 1; padding: 4px; font-size: 10px; border: 1px solid #2a4a6a;
+    background: #0d1a2e; color: #5a8aaa; border-radius: 3px; cursor: pointer; transition: all .15s;
+  }
+  .sci-mode-toggle button.active { background: #1a5276; color: #fff; border-color: #2980b9; }
+  .sci-btns { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+  .sci-btns button {
+    padding: 9px 3px; border: none; border-radius: 4px;
+    font-size: 11px; font-weight: bold; cursor: pointer;
+    transition: filter .1s, transform .08s; font-family: Arial, sans-serif; line-height: 1.2;
+  }
+  .sci-btns button:hover { filter: brightness(1.3); }
+  .sci-btns button:active { transform: scale(.92); }
+  .sci-btns button.c-num  { background: #2c3e50; color: #ecf0f1; }
+  .sci-btns button.c-op   { background: #1a5276; color: #aed6f1; }
+  .sci-btns button.c-fn   { background: #1a3a2e; color: #82e0aa; }
+  .sci-btns button.c-eq   { background: #b7950b; color: #fff; font-size: 14px; }
+  .sci-btns button.c-clr  { background: #7b241c; color: #f1948a; }
+  .sci-btns button.c-mem  { background: #4a235a; color: #d7bde2; }
+  .sci-btns button.c-const{ background: #1b2631; color: #f0b27a; border: 1px solid #3a3a1a; }
+
+  /* ── CALC TABS ── */
+  .calc-tabs { display:flex; margin-bottom:10px; border-radius:5px; overflow:hidden; border:1px solid #2a4a6a; }
+  .calc-tab { flex:1; padding:7px 4px; background:#0d1a2e; color:#5a8aaa; border:none; cursor:pointer; font-size:12px; font-weight:bold; transition:all .15s; }
+  .calc-tab.active { background:#1a5276; color:#fff; }
+  .calc-tab:not(:last-child) { border-right:1px solid #2a4a6a; }
+
+  /* ── DMS ── */
+  .dms-inputs { display:grid; grid-template-columns:1fr 1fr 1fr 76px; gap:7px; margin-bottom:10px; }
+  .dms-field { display:flex; flex-direction:column; gap:3px; }
+  .dms-field label { font-size:10px; color:#82e0aa; font-weight:bold; letter-spacing:.5px; }
+  .dms-field input { background:#0d1a2e; border:1px solid #2a4a6a; color:#00e5ff; border-radius:4px; padding:6px 4px; font-size:14px; font-family:'Courier New',monospace; text-align:center; width:100%; }
+  .dms-field input:focus { outline:none; border-color:#00e5ff; }
+  .dms-set-btn { background:#1a5276; color:#fff; border:none; border-radius:4px; padding:6px 8px; font-size:11px; font-weight:bold; cursor:pointer; width:100%; }
+  .dms-set-btn:hover { background:#2980b9; }
+  .dms-ops { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:8px; }
+  .dms-op-btn { padding:9px 4px; border:none; border-radius:4px; font-size:12px; font-weight:bold; cursor:pointer; transition:filter .1s; }
+  .dms-op-btn:hover { filter:brightness(1.3); }
+  .dms-convert { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:8px; }
+  .dms-conv-btn { padding:7px 4px; border:none; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer; transition:filter .1s; }
+  .dms-conv-btn:hover { filter:brightness(1.3); }
+  .dms-scalar-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .dms-result-box { background:#0d1a2e; border:1px solid #2a4a6a; border-radius:6px; padding:10px 14px; margin-bottom:6px; }
+  .dms-result-label { font-size:10px; color:#5a8aaa; margin-bottom:4px; }
+  .dms-result-dms { font-size:20px; color:#00e5ff; font-family:'Courier New',monospace; font-weight:bold; }
+  .dms-result-dec { font-size:12px; color:#82e0aa; margin-top:4px; font-family:'Courier New',monospace; }
+
+  /* hidden utility */
+  .hidden { display: none !important; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #f0f0f0; }
+  ::-webkit-scrollbar-thumb { background: #aaa; border-radius: 3px; }
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen {
+    position:fixed; inset:0; background:linear-gradient(135deg,#0d1b2a 0%,#1a3e6e 60%,#c8a000 100%);
+    display:flex; align-items:center; justify-content:center; z-index:500;
+  }
+  .login-card {
+    background:#fff; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,.4);
+    width:420px; overflow:hidden;
+  }
+  .login-card-header {
+    background:linear-gradient(135deg,#1a3e6e,#0d2a50);
+    padding:28px 30px; text-align:center; color:#fff;
+  }
+  .login-card-header .gate-logo-big {
+    width:70px; height:70px; background:#fff; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 14px; box-shadow:0 4px 15px rgba(0,0,0,.3);
+  }
+  .login-card-header h2 { font-size:18px; margin-bottom:4px; }
+  .login-card-header p  { font-size:11px; color:#aac; }
+  .login-card-body { padding:28px 30px; }
+  .login-field { margin-bottom:16px; }
+  .login-field label { display:block; font-size:12px; font-weight:bold; color:#1a3e6e; margin-bottom:5px; }
+  .login-field input {
+    width:100%; padding:10px 14px; border:2px solid #ddd; border-radius:6px;
+    font-size:13px; transition:border .2s; outline:none;
+  }
+  .login-field input:focus { border-color:#1a3e6e; }
+  .login-field .hint { font-size:10px; color:#888; margin-top:3px; }
+  .login-name-preview {
+    background:#e8f4e8; border:1px solid #82c882; border-radius:6px;
+    padding:8px 12px; font-size:12px; color:#2d6a2d; margin-bottom:14px;
+    display:none; align-items:center; gap:8px;
+  }
+  .login-name-preview.show { display:flex; }
+  .btn-login {
+    width:100%; padding:12px; background:linear-gradient(135deg,#1a3e6e,#2980b9);
+    color:#fff; border:none; border-radius:6px; font-size:14px; font-weight:bold;
+    cursor:pointer; transition:opacity .2s;
+  }
+  .btn-login:hover { opacity:.9; }
+  .btn-login:disabled { opacity:.5; cursor:not-allowed; }
+  .login-divider { text-align:center; margin:14px 0; color:#aaa; font-size:11px; position:relative; }
+  .login-divider::before, .login-divider::after {
+    content:''; position:absolute; top:50%; width:40%; height:1px; background:#ddd;
+  }
+  .login-divider::before { left:0; } .login-divider::after { right:0; }
+  .btn-admin-login {
+    width:100%; padding:9px; background:#fff; color:#1a3e6e; border:2px solid #1a3e6e;
+    border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; transition:all .2s;
+  }
+  .btn-admin-login:hover { background:#1a3e6e; color:#fff; }
+
+  /* ── ADMIN PANEL ── */
+  #admin-screen {
+    position:fixed; inset:0; background:#f0f4f8; z-index:400; overflow-y:auto; display:none;
+  }
+  .admin-header {
+    background:linear-gradient(135deg,#1a3e6e,#0d2a50); color:#fff;
+    padding:14px 24px; display:flex; justify-content:space-between; align-items:center;
+  }
+  .admin-header h2 { font-size:16px; }
+  .admin-header .admin-meta { font-size:11px; color:#aac; }
+  .admin-body { padding:20px 24px; max-width:1100px; margin:0 auto; }
+  .admin-stats {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px;
+  }
+  .stat-card {
+    background:#fff; border-radius:8px; padding:16px; text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.08); border-top:4px solid #1a3e6e;
+  }
+  .stat-card.green  { border-color:#28a745; }
+  .stat-card.orange { border-color:#fd7e14; }
+  .stat-card.red    { border-color:#dc3545; }
+  .stat-card .stat-num { font-size:28px; font-weight:bold; color:#1a3e6e; }
+  .stat-card.green  .stat-num { color:#28a745; }
+  .stat-card.orange .stat-num { color:#fd7e14; }
+  .stat-card.red    .stat-num { color:#dc3545; }
+  .stat-card .stat-label { font-size:11px; color:#666; margin-top:4px; }
+  .admin-section-title {
+    font-size:14px; font-weight:bold; color:#1a3e6e;
+    border-bottom:2px solid #1a3e6e; padding-bottom:6px; margin-bottom:12px;
+  }
+  .admin-table { width:100%; border-collapse:collapse; background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.08); margin-bottom:20px; }
+  .admin-table th { background:#1a3e6e; color:#fff; padding:10px 12px; font-size:12px; text-align:left; }
+  .admin-table td { padding:9px 12px; font-size:12px; border-bottom:1px solid #eee; vertical-align:middle; }
+  .admin-table tr:hover td { background:#f0f7ff; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:bold; }
+  .badge-green  { background:#d4edda; color:#155724; }
+  .badge-orange { background:#fff3cd; color:#856404; }
+  .badge-red    { background:#f8d7da; color:#721c24; }
+  .btn-view-detail { background:#1a3e6e; color:#fff; border:none; border-radius:3px; padding:4px 10px; font-size:11px; cursor:pointer; }
+  .btn-view-detail:hover { background:#0d2a50; }
+  .btn-export-csv { background:#28a745; color:#fff; border:none; border-radius:4px; padding:7px 16px; font-size:12px; cursor:pointer; font-weight:bold; }
+
+  /* ── DETAIL MODAL ── */
+  .detail-modal { width:720px; max-height:80vh; overflow-y:auto; }
+  .detail-q { border:1px solid #ddd; border-radius:6px; margin-bottom:10px; overflow:hidden; }
+  .detail-q-header { background:#1a3e6e; color:#fff; padding:6px 12px; font-size:12px; display:flex; justify-content:space-between; }
+  .detail-q-body { padding:10px 14px; font-size:12px; line-height:1.7; }
+  .detail-correct { color:#28a745; font-weight:bold; }
+  .detail-wrong   { color:#dc3545; font-weight:bold; }
+  .detail-skipped { color:#888; }
+
+  /* ── PDF DOWNLOAD btn in result modal ── */
+  .btn-pdf { background:linear-gradient(135deg,#c00,#8b0000); color:#fff; border:none; border-radius:4px; padding:9px 20px; font-size:13px; font-weight:bold; cursor:pointer; }
+  .btn-pdf:hover { opacity:.9; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-card-header">
+      <div class="gate-logo-big">
+        <svg viewBox="0 0 80 80" width="52" height="52">
+          <rect width="80" height="80" rx="4" fill="#1a3e6e"/>
+          <text x="40" y="30" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff" font-family="Arial">GATE</text>
+          <text x="40" y="48" text-anchor="middle" font-size="8" fill="#c8a000" font-family="Arial">2025</text>
+          <text x="40" y="62" text-anchor="middle" font-size="7" fill="#aaa" font-family="Arial">IIT ROORKEE</text>
+        </svg>
+      </div>
+      <h2>GATE 2025 — CBT Portal</h2>
+      <p>Computer Science and Information Technology (CS)</p>
+    </div>
+    <div class="login-card-body">
+      <div class="login-field">
+        <label>📧 Gmail Address</label>
+        <input type="email" id="login-email" placeholder="yourname@gmail.com" oninput="onEmailInput()" autocomplete="email">
+        <div class="hint">Enter your Gmail ID. Your name will be fetched automatically.</div>
+      </div>
+      <div class="login-name-preview" id="login-name-preview">
+        <span>👤</span>
+        <span id="login-name-text"></span>
+      </div>
+      <div class="login-field" id="login-name-field" style="display:none;">
+        <label>Full Name <span style="color:#c00;">*</span></label>
+        <input type="text" id="login-name-input" placeholder="Enter your full name" oninput="onNameInput()">
+        <div class="hint">We couldn't auto-fetch your name. Please enter it manually.</div>
+      </div>
+      <div class="login-field">
+        <label>🎫 Roll Number</label>
+        <input type="text" id="login-roll" placeholder="e.g. CS25R01234567" oninput="validateLoginForm()">
+      </div>
+      <button class="btn-login" id="btn-login" disabled onclick="doLogin()">
+        ✔ Proceed to Instructions
+      </button>
+      <div class="login-divider">OR</div>
+      <button class="btn-admin-login" onclick="showAdminLogin()">
+        🔐 Admin Login
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Password Prompt (simple inline modal) -->
+<div class="modal-overlay hidden" id="admin-login-modal">
+  <div class="modal" style="width:360px;">
+    <div class="modal-header">
+      <h3>🔐 Admin Login</h3>
+      <button class="modal-close" onclick="closeModal('admin-login-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="login-field">
+        <label>Admin Password</label>
+        <input type="password" id="admin-pass-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doAdminLogin()">
+        <div class="hint" style="color:#c00;" id="admin-pass-err"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" style="background:#6c757d;color:#fff;" onclick="closeModal('admin-login-modal')">Cancel</button>
+      <button class="btn" style="background:#1a3e6e;color:#fff;" onclick="doAdminLogin()">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ADMIN PANEL
+══════════════════════════════════════════ -->
+<div id="admin-screen">
+  <div class="admin-header">
+    <div>
+      <h2>🎓 GATE CBT — Admin Panel</h2>
+      <div class="admin-meta">Manage student submissions and responses</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="btn-export-csv" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="btn" style="background:#dc3545;color:#fff;" onclick="clearAllData()">🗑 Clear All Data</button>
+      <button class="btn" style="background:#fff;color:#1a3e6e;" onclick="adminLogout()">Logout</button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <div class="admin-stats" id="admin-stats"></div>
+    <div class="admin-section-title">📋 Student Submissions</div>
+    <div style="margin-bottom:12px;display:flex;gap:10px;align-items:center;">
+      <input type="text" id="admin-search" placeholder="🔍 Search by name, email or roll number..." oninput="renderAdminTable()"
+        style="padding:7px 12px;border:1px solid #ccc;border-radius:4px;width:320px;font-size:12px;">
+      <select id="admin-filter" onchange="renderAdminTable()" style="padding:7px 10px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
+        <option value="all">All Students</option>
+        <option value="submitted">Submitted</option>
+        <option value="inprogress">In Progress</option>
+      </select>
+    </div>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>#</th><th>Name</th><th>Gmail</th><th>Roll No.</th>
+          <th>Attempted</th><th>Score (est.)</th><th>Time Taken</th><th>Status</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="admin-table-body"></tbody>
+    </table>
+    <div id="admin-empty" style="text-align:center;padding:40px;color:#888;font-size:14px;display:none;">
+      No submissions yet. Students will appear here after they log in.
+    </div>
+  </div>
+</div>
+
+<!-- Student Detail Modal -->
+<div class="modal-overlay hidden" id="detail-modal">
+  <div class="modal detail-modal">
+    <div class="modal-header">
+      <h3 id="detail-modal-title">Student Response Sheet</h3>
+      <button class="modal-close" onclick="closeModal('detail-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="detail-modal-body" style="padding:14px;"></div>
+    <div class="modal-footer">
+      <button class="btn" style="background:#6c757d;color:#fff;" onclick="closeModal('detail-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     INSTRUCTION SCREEN
+══════════════════════════════════════════ -->
+<div id="instruction-screen" style="display:none;">
+  <div class="inst-header">
+    GATE 2025 — Graduate Aptitude Test in Engineering | Instructions
+  </div>
+  <div class="inst-body">
+    <p style="background:#fff3cd;border:1px solid #ffc107;padding:8px 12px;border-radius:4px;">
+      ⚠ Please read all instructions carefully before clicking <strong>"I am ready to begin"</strong>.
+    </p>
+
+    <h2>General Instructions</h2>
+    <ul>
+      <li>Total duration of GATE examination is <strong>180 minutes</strong> (3 hours).</li>
+      <li>The clock will be set at the server. The countdown timer at the top right of the screen will display the remaining time for you to complete the examination. When the timer reaches zero, the examination will end by itself. You do not need to end or submit your examination.</li>
+      <li>The Question Palette displayed on the right side of screen will show the status of each question using one of the following symbols.</li>
+    </ul>
+
+    <div class="inst-legend">
+      <div class="inst-legend-item"><div class="legend-dot dot-not-visited" style="width:22px;height:22px;border-radius:50%;background:#b0b0b0;"></div> Not Visited</div>
+      <div class="inst-legend-item"><div class="legend-dot dot-not-answered" style="width:22px;height:22px;border-radius:50%;background:#dc3545;"></div> Not Answered</div>
+      <div class="inst-legend-item"><div class="legend-dot dot-answered" style="width:22px;height:22px;border-radius:50%;background:#28a745;"></div> Answered</div>
+      <div class="inst-legend-item"><div class="legend-dot dot-marked" style="width:22px;height:22px;border-radius:50%;background:#6f42c1;"></div> Marked for Review</div>
+      <div class="inst-legend-item" style="gap:8px"><div style="width:22px;height:22px;border-radius:50%;background:#6f42c1;box-shadow:0 0 0 2px #fff,0 0 0 4px #28a745;"></div> Answered & Marked</div>
+    </div>
+
+    <h2>Navigating to a Question</h2>
+    <ul>
+      <li>To answer a question, do the following: Click on the question number in the Question Palette at the right of your screen to go to that numbered question directly.</li>
+      <li>Click on <strong>Save &amp; Next</strong> to save your answer for the current question and then go to the next question.</li>
+      <li>Click on <strong>Mark for Review &amp; Next</strong> to save your answer for the current question, mark it for review, and then go to the next question.</li>
+    </ul>
+
+    <h2>Answering a Question</h2>
+    <ul>
+      <li>Procedure for answering a <strong>Multiple Choice type question</strong>: Choose one answer from the 4 options (A, B, C, D) given below the question. Click on the circle button beside the answer.</li>
+      <li>Procedure for answering a <strong>Multiple Select type question</strong>: Choose one or more answer(s) from the 4 options (A, B, C, D) given below the question. Click on the checkbox button beside each of the selected options.</li>
+      <li>Procedure for answering a <strong>Numerical Answer type question</strong>: Click on the answer box. A keypad will appear. Use this keypad to enter the answer.</li>
+      <li>To change your answer, click on the option you want to select.</li>
+      <li>To deselect a chosen answer, click on the answer button again or click on the <strong>Clear Response</strong> button.</li>
+    </ul>
+
+    <h2>Marking Scheme</h2>
+    <table class="inst-table">
+      <tr><th>Question Type</th><th>Marks</th><th>Negative Marking</th></tr>
+      <tr><td>MCQ – 1 Mark</td><td>+1</td><td>–1/3</td></tr>
+      <tr><td>MCQ – 2 Marks</td><td>+2</td><td>–2/3</td></tr>
+      <tr><td>MSQ – 1/2 Mark</td><td>+1 or +2</td><td>No negative</td></tr>
+      <tr><td>NAT – 1/2 Mark</td><td>+1 or +2</td><td>No negative</td></tr>
+    </table>
+
+    <h2>Sections</h2>
+    <ul>
+      <li>This paper has <strong>2 sections</strong>: General Aptitude (GA) and Subject-specific section.</li>
+      <li>GA has 10 questions (5 × 1 mark + 5 × 2 marks = 15 marks).</li>
+      <li>Subject section has 55 questions (25 × 1 mark + 30 × 2 marks = 85 marks).</li>
+      <li>Total: <strong>65 questions, 100 marks.</strong></li>
+    </ul>
+
+    <div style="background:#e8f0f8;border:1px solid #1a3e6e;padding:12px;border-radius:4px;margin-top:14px;">
+      <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="agree-check" style="margin-top:2px;">
+        <span style="font-size:12.5px;">I have read all the instructions carefully and I agree to adhere to all the examination rules. I understand that in case of unfair means or impersonation, I will be debarred from this and future examinations and legal action may be taken against me.</span>
+      </label>
+    </div>
+
+    <div class="start-btn-wrap">
+      <button class="btn-start" id="start-exam-btn" disabled onclick="startExam()">
+        I am ready to begin &nbsp;▶
+      </button>
+      <p style="margin-top:8px;font-size:11px;color:#888;">Button activates after accepting the declaration above.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EXAM INTERFACE
+══════════════════════════════════════════ -->
+
+<!-- HEADER -->
+<div id="header">
+  <div class="left">
+    <div style="width:56px;height:56px;background:#fff;border-radius:4px;display:flex;align-items:center;justify-content:center;padding:3px;">
+      <svg viewBox="0 0 80 80" width="50" height="50">
+        <rect width="80" height="80" rx="4" fill="#1a3e6e"/>
+        <text x="40" y="30" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff" font-family="Arial">GATE</text>
+        <text x="40" y="48" text-anchor="middle" font-size="8" fill="#c8a000" font-family="Arial">2025</text>
+        <text x="40" y="62" text-anchor="middle" font-size="7" fill="#aaa" font-family="Arial">IIT ROORKEE</text>
+      </svg>
+    </div>
+    <div class="exam-title">
+      <h1>GATE 2025 — Graduate Aptitude Test in Engineering</h1>
+      <p>Organising Institute: IIT Roorkee &nbsp;|&nbsp; Computer Science and Information Technology (CS)</p>
+    </div>
+  </div>
+  <div class="right">
+    <div>Candidate: <strong id="cand-name">RAVI KUMAR SHARMA</strong></div>
+    <div>Roll No: <strong>CS25R01234567</strong></div>
+    <div>Test Centre: TCS iON, Kolkata</div>
+  </div>
+</div>
+
+<!-- INFO BAR -->
+<div id="info-bar">
+  <span>Section: <strong id="current-section-name">General Aptitude</strong></span>
+  <span>Question Type: <strong id="current-q-type">MCQ</strong></span>
+  <span>Marks: <strong id="current-marks">+1</strong> &nbsp;|&nbsp; Negative Marks: <strong id="current-neg">–0.33</strong></span>
+  <span><button onclick="openCalc()" style="background:#1a3e6e;color:#fff;border:none;padding:3px 10px;border-radius:3px;cursor:pointer;font-size:11px;">🖩 Calculator</button></span>
+</div>
+
+<!-- TIMER BAR -->
+<div id="timer-bar">
+  <div class="time-left">
+    <span>⏱ Time Remaining:</span>
+    <div class="time-display" id="timer-display">02:59:59</div>
+  </div>
+  <div class="section-info">
+    Question <span id="q-counter">1</span> of <span id="q-total">65</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- QUESTION PANEL -->
+  <div id="question-panel">
+
+    <!-- Q Header -->
+    <div id="q-header">
+      <div class="q-number">Question No. <span id="q-num-display">1</span></div>
+      <div class="q-type-badge" id="q-type-badge">MCQ</div>
+      <div class="q-marks" id="q-marks-display">Marks: +1 | Negative: –0.33</div>
+    </div>
+
+    <!-- Q Body -->
+    <div id="q-body">
+      <div class="section-label" id="section-label-text">Section: General Aptitude</div>
+      <div class="question-text" id="question-text">Loading question...</div>
+      <ul class="options" id="options-list"></ul>
+      <div class="nat-input hidden" id="nat-input-area">
+        <p style="font-size:12px;color:#555;margin-bottom:6px;">Enter your numerical answer:</p>
+        <input type="number" id="nat-input" placeholder="Type answer" step="any">
+      </div>
+    </div>
+
+    <!-- Q Actions -->
+    <div id="q-actions">
+      <button class="btn btn-save-next" onclick="saveAndNext()">✔ Save &amp; Next</button>
+      <button class="btn btn-save-mark" onclick="saveAndMark()">★ Save &amp; Mark for Review</button>
+      <button class="btn btn-mark-review" onclick="markOnly()">🔖 Mark for Review &amp; Next</button>
+      <button class="btn btn-clear" onclick="clearResponse()">✖ Clear Response</button>
+      <button class="btn btn-prev" onclick="prevQuestion()">◀ Previous</button>
+      <button class="btn btn-next" onclick="nextQuestion()">Next ▶</button>
+      <button class="btn btn-submit-final" onclick="openSubmitModal()">🏁 Submit Exam</button>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="right-panel">
+    <div id="legend">Question Palette</div>
+    <div id="legend-items">
+      <div class="legend-item"><div class="legend-dot dot-not-visited">·</div> Not Visited</div>
+      <div class="legend-item"><div class="legend-dot dot-not-answered">1</div> Not Answered</div>
+      <div class="legend-item"><div class="legend-dot dot-answered">1</div> Answered</div>
+      <div class="legend-item"><div class="legend-dot dot-marked">1</div> Marked</div>
+      <div class="legend-item" style="margin-top:2px;">
+        <div class="legend-dot dot-answered-marked" style="background:#6f42c1;box-shadow:0 0 0 2px #fff,0 0 0 3px #28a745;"></div> Ans+Mark
+      </div>
+    </div>
+    <div id="section-tabs"></div>
+    <div id="q-grid-wrap">
+      <div id="q-grid"></div>
+    </div>
+    <div id="candidate-photo">
+      <div class="photo-box">
+        <svg viewBox="0 0 48 56" width="48" height="56">
+          <rect width="48" height="56" fill="#e0e0e0"/>
+          <circle cx="24" cy="18" r="10" fill="#aaa"/>
+          <ellipse cx="24" cy="50" rx="16" ry="12" fill="#aaa"/>
+        </svg>
+      </div>
+      <div class="candidate-details">
+        <div><strong>RAVI KUMAR SHARMA</strong></div>
+        <div>CS25R01234567</div>
+        <div style="color:#c00;font-size:10px;">CS — Paper: CS</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SUBMIT MODAL
+══════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="submit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Submit Examination</h3>
+      <button class="modal-close" onclick="closeModal('submit-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>⚠ Are you sure you want to <strong>submit your examination</strong>? Once submitted, you cannot change any answer.</p>
+      <table class="summary-table" id="summary-table"></table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" style="background:#6c757d;color:#fff;" onclick="closeModal('submit-modal')">Cancel</button>
+      <button class="btn btn-submit-final" onclick="finalSubmit()">Yes, Submit Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     RESULT MODAL
+══════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="result-modal">
+  <div class="modal" style="width:560px;">
+    <div class="modal-header"><h3>🏁 Examination Submitted Successfully</h3></div>
+    <div class="modal-body">
+      <p style="font-size:15px;text-align:center;color:#1a3e6e;font-weight:bold;" id="result-congrats">Thank you for appearing in GATE 2025!</p>
+      <p style="text-align:center;margin:6px 0;font-size:12px;color:#555;">Your responses have been recorded and saved.</p>
+      <table class="summary-table" id="result-table" style="margin:14px 0;"></table>
+      <p style="font-size:11px;color:#888;">Results will be declared on the official GATE website. Please note your roll number for future reference.</p>
+    </div>
+    <div class="modal-footer" style="gap:10px;">
+      <button class="btn-pdf" onclick="downloadPDF()">📄 Download Answer Sheet (PDF)</button>
+      <button class="btn" style="background:#1a3e6e;color:#fff;" onclick="location.reload()">Close &amp; Exit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCIENTIFIC CALCULATOR MODAL
+══════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="calc-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🔬 Scientific Calculator</h3>
+      <button class="modal-close" onclick="closeModal('calc-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="sci-calc">
+
+        <!-- ── TABS ── -->
+        <div class="calc-tabs">
+          <button class="calc-tab active" id="tab-sci" onclick="switchCalcTab('sci')">Scientific</button>
+          <button class="calc-tab" id="tab-dms" onclick="switchCalcTab('dms')">DMS (°′″)</button>
+        </div>
+
+        <!-- ════════════════════════════
+             TAB 1 — SCIENTIFIC
+        ════════════════════════════ -->
+        <div id="panel-sci">
+          <!-- Display -->
+          <div class="sci-display">
+            <div class="expr-line" id="sc-expr"></div>
+            <div class="main-line" id="sc-disp">0</div>
+            <div class="mode-line" id="sc-mode">DEG &nbsp;|&nbsp; Normal</div>
+          </div>
+
+          <!-- DEG / RAD / 2nd / Memory -->
+          <div class="sci-mode-toggle">
+            <button id="btn-deg" class="active" onclick="scSetAngle('deg')">DEG</button>
+            <button id="btn-rad" onclick="scSetAngle('rad')">RAD</button>
+            <button id="btn-2nd" onclick="scToggle2nd()" style="flex:1.2;">2nd</button>
+            <button onclick="scAction('MC')" class="c-mem" style="flex:1;">MC</button>
+            <button onclick="scAction('MR')" class="c-mem" style="flex:1;">MR</button>
+            <button onclick="scAction('M+')" class="c-mem" style="flex:1;">M+</button>
+            <button onclick="scAction('M-')" class="c-mem" style="flex:1;">M−</button>
+          </div>
+
+          <!-- Button grid 5×9 -->
+          <div class="sci-btns">
+            <button class="c-fn" id="sc-sin" onclick="scAction('sin')">sin</button>
+            <button class="c-fn" id="sc-cos" onclick="scAction('cos')">cos</button>
+            <button class="c-fn" id="sc-tan" onclick="scAction('tan')">tan</button>
+            <button class="c-fn" onclick="scAction('log10')">log</button>
+            <button class="c-fn" onclick="scAction('ln')">ln</button>
+
+            <button class="c-fn" onclick="scAction('asin')">sin⁻¹</button>
+            <button class="c-fn" onclick="scAction('acos')">cos⁻¹</button>
+            <button class="c-fn" onclick="scAction('atan')">tan⁻¹</button>
+            <button class="c-fn" onclick="scAction('log2')">log₂</button>
+            <button class="c-fn" onclick="scAction('exp')">eˣ</button>
+
+            <button class="c-fn" onclick="scAction('sqrt')">√x</button>
+            <button class="c-fn" onclick="scAction('cbrt')">∛x</button>
+            <button class="c-fn" onclick="scAction('sq')">x²</button>
+            <button class="c-fn" onclick="scAction('cube')">x³</button>
+            <button class="c-fn" onclick="scAction('pow')">xʸ</button>
+
+            <button class="c-fn" onclick="scAction('recip')">1/x</button>
+            <button class="c-fn" onclick="scAction('abs')">|x|</button>
+            <button class="c-fn" onclick="scAction('fact')">n!</button>
+            <button class="c-const" onclick="scAction('pi')">π</button>
+            <button class="c-const" onclick="scAction('eul')">e</button>
+
+            <button class="c-clr" onclick="scAction('AC')">AC</button>
+            <button class="c-clr" onclick="scAction('CE')">CE</button>
+            <button class="c-clr" onclick="scAction('BS')">⌫</button>
+            <button class="c-op"  onclick="scAction('(')">(</button>
+            <button class="c-op"  onclick="scAction(')')">)</button>
+
+            <button class="c-num" onclick="scAction('7')">7</button>
+            <button class="c-num" onclick="scAction('8')">8</button>
+            <button class="c-num" onclick="scAction('9')">9</button>
+            <button class="c-op"  onclick="scAction('/')">÷</button>
+            <button class="c-fn"  onclick="scAction('mod')">mod</button>
+
+            <button class="c-num" onclick="scAction('4')">4</button>
+            <button class="c-num" onclick="scAction('5')">5</button>
+            <button class="c-num" onclick="scAction('6')">6</button>
+            <button class="c-op"  onclick="scAction('*')">×</button>
+            <button class="c-fn"  onclick="scAction('nPr')">nPr</button>
+
+            <button class="c-num" onclick="scAction('1')">1</button>
+            <button class="c-num" onclick="scAction('2')">2</button>
+            <button class="c-num" onclick="scAction('3')">3</button>
+            <button class="c-op"  onclick="scAction('-')">−</button>
+            <button class="c-fn"  onclick="scAction('nCr')">nCr</button>
+
+            <button class="c-num" onclick="scAction('0')" style="grid-column:span 2;">0</button>
+            <button class="c-num" onclick="scAction('.')">.</button>
+            <button class="c-op"  onclick="scAction('+')">+</button>
+            <button class="c-eq"  onclick="scAction('=')">=</button>
+          </div>
+        </div><!-- /panel-sci -->
+
+        <!-- ════════════════════════════
+             TAB 2 — DMS CALCULATOR
+        ════════════════════════════ -->
+        <div id="panel-dms" style="display:none;">
+
+          <!-- DMS Display -->
+          <div class="sci-display" style="min-height:90px;">
+            <div class="expr-line" id="dms-expr" style="font-size:12px;"></div>
+            <div class="main-line" id="dms-disp" style="font-size:22px;letter-spacing:1px;">0° 0′ 0″</div>
+            <div class="mode-line" id="dms-mode" style="color:#82e0aa;">DMS Mode — Enter D° M′ S″</div>
+          </div>
+
+          <!-- DMS input fields -->
+          <div class="dms-inputs">
+            <div class="dms-field">
+              <label>Degrees °</label>
+              <input type="number" id="dms-d" placeholder="0" min="0">
+            </div>
+            <div class="dms-field">
+              <label>Minutes ′</label>
+              <input type="number" id="dms-m" placeholder="0" min="0" max="59">
+            </div>
+            <div class="dms-field">
+              <label>Seconds ″</label>
+              <input type="number" id="dms-s" placeholder="0" min="0" max="59" step="0.001">
+            </div>
+            <div class="dms-field" style="justify-content:flex-end;padding-top:18px;">
+              <button class="dms-set-btn" onclick="dmsSetOperand()">SET ✔</button>
+            </div>
+          </div>
+
+          <!-- DMS Operation Buttons -->
+          <div class="dms-ops">
+            <button class="dms-op-btn c-op"  onclick="dmsBinOp('+')">＋ Add</button>
+            <button class="dms-op-btn c-op"  onclick="dmsBinOp('-')">－ Sub</button>
+            <button class="dms-op-btn c-op"  onclick="dmsBinOp('*')">× Mul</button>
+            <button class="dms-op-btn c-op"  onclick="dmsBinOp('/')">÷ Div</button>
+          </div>
+
+          <!-- DMS Convert row -->
+          <div class="dms-convert">
+            <button class="dms-conv-btn c-fn" onclick="dmsToDecimal()">DMS → Decimal°</button>
+            <button class="dms-conv-btn c-fn" onclick="decimalToDms()">Decimal° → DMS</button>
+            <button class="dms-conv-btn c-fn" onclick="dmsNormalize()">Normalize</button>
+          </div>
+
+          <!-- Multiply/Divide by scalar -->
+          <div class="dms-scalar-row">
+            <span style="color:#aaa;font-size:11px;">Scalar (for × ÷):</span>
+            <input type="number" id="dms-scalar" value="2" min="0.001" step="any" style="width:70px;background:#1a2a3a;border:1px solid #2a4a6a;color:#00e5ff;border-radius:3px;padding:3px 6px;font-size:13px;text-align:center;">
+          </div>
+
+          <!-- DMS Result display -->
+          <div class="dms-result-box" id="dms-result-box">
+            <div class="dms-result-label">Result</div>
+            <div class="dms-result-dms"  id="dms-res-dms">—</div>
+            <div class="dms-result-dec"  id="dms-res-dec">—</div>
+          </div>
+
+          <!-- DMS Clear -->
+          <div style="text-align:right;margin-top:6px;">
+            <button class="c-clr" style="border:none;border-radius:4px;padding:6px 16px;font-size:11px;font-weight:bold;cursor:pointer;" onclick="dmsClear()">⌫ Clear All</button>
+          </div>
+
+        </div><!-- /panel-dms -->
+
+      </div><!-- /sci-calc -->
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+// ─────────────── QUESTION BANK ───────────────
+const sections = [
+  {
+    name: "General Aptitude",
+    short: "GA",
+    questions: [
+      // 1-mark GA
+      { id:1, type:"MCQ", marks:1, neg:0.33, text:"Choose the most appropriate meaning of the word <span class='highlight'>EPHEMERAL</span>.", options:["Permanent","Lasting a very short time","Mysterious","Extraordinary"], answer:1 },
+      { id:2, type:"MCQ", marks:1, neg:0.33, text:"The ratio of the number of boys to the number of girls in a class is 3 : 2. If 20% of the boys and 25% of the girls are scholarship holders, what percentage of the students do NOT receive a scholarship?", options:["76%","78%","80%","82%"], answer:1 },
+      { id:3, type:"MCQ", marks:1, neg:0.33, text:"Complete the analogy: <span class='highlight'>Sculptor : Chisel :: Painter : ?</span>", options:["Canvas","Brush","Easel","Palette"], answer:1 },
+      { id:4, type:"MCQ", marks:1, neg:0.33, text:"Select the word that is OPPOSITE in meaning to <span class='highlight'>FRUGAL</span>.", options:["Thrifty","Economical","Extravagant","Careful"], answer:2 },
+      { id:5, type:"MCQ", marks:1, neg:0.33, text:"If <strong>ROAD</strong> is coded as <strong>URDG</strong>, how would <strong>SWAN</strong> be coded?", options:["VXDQ","VZDQ","VZCQ","XZDQ"], answer:0 },
+      // 2-mark GA
+      { id:6, type:"MCQ", marks:2, neg:0.67, text:"A train 240 m long passes a pole in 24 seconds. How long will it take to pass a platform 650 m long?", options:["65 s","89 s","100 s","109 s"], answer:1 },
+      { id:7, type:"NAT",  marks:2, neg:0,    text:"What is the value of <strong>x</strong> in the equation: 2log<sub>10</sub>(x) = log<sub>10</sub>(4) + log<sub>10</sub>(9)? [Enter the numerical value]", options:[], answer:6 },
+      { id:8, type:"MCQ", marks:2, neg:0.67, text:"Six persons sit in a row. The probability that three particular persons are always together is:", options:["1/5","1/4","3/20","1/20"], answer:0 },
+      { id:9, type:"MCQ", marks:2, neg:0.67, text:"A vessel contains 40 litres of milk. 4 litres are drawn out and replaced by water. The operation is repeated 2 more times. The quantity of milk now left in the vessel is:", options:["29.16 L","27.50 L","24.00 L","32.00 L"], answer:0 },
+      { id:10, type:"MSQ", marks:2, neg:0,   text:"Which of the following statements about prime numbers are <strong>CORRECT</strong>?", options:["2 is the only even prime number","1 is a prime number","All prime numbers are odd","Every integer > 1 has a unique prime factorisation"], answer:[0, 3] },
+    ]
+  },
+  {
+    name: "Computer Science",
+    short: "CS",
+    questions: [
+      // 1-mark CS
+      { id:11, type:"MCQ", marks:1, neg:0.33, text:"Which of the following is NOT a property of a <span class='highlight'>B-Tree</span> of order m?", options:["Every node has at most m children","Every non-root, non-leaf node has at least ⌈m/2⌉ children","The root has at least 2 children unless it is a leaf","All leaves appear at the same level"], answer:0 },
+      { id:12, type:"MCQ", marks:1, neg:0.33, text:"The time complexity of building a <strong>max-heap</strong> from an array of n elements using the standard bottom-up approach is:", options:["O(n log n)","O(n)","O(n²)","O(log n)"], answer:1 },
+      { id:13, type:"NAT",  marks:1, neg:0,   text:"How many edges does a <strong>complete graph</strong> K<sub>7</sub> have?", options:[], answer:21 },
+      { id:14, type:"MCQ", marks:1, neg:0.33, text:"Which normal form eliminates <strong>partial dependencies</strong>?", options:["1NF","2NF","3NF","BCNF"], answer:1 },
+      { id:15, type:"MCQ", marks:1, neg:0.33, text:"The addressing mode in which the operand's address is given as part of the instruction itself is called:", options:["Register addressing","Immediate addressing","Direct addressing","Indirect addressing"], answer:2 },
+      { id:16, type:"MCQ", marks:1, neg:0.33, text:"In the context of operating systems, a <span class='highlight'>semaphore</span> is used for:", options:["Memory management","Process synchronisation","Disk scheduling","File allocation"], answer:1 },
+      { id:17, type:"MCQ", marks:1, neg:0.33, text:"Which algorithm is used in Dijkstra's shortest path algorithm to select the next vertex?", options:["Stack","Queue","Priority Queue (Min-Heap)","Adjacency Matrix"], answer:2 },
+      { id:18, type:"NAT",  marks:1, neg:0,   text:"A cache has 256 blocks. The main memory has 4096 blocks. The number of bits required for the <strong>set field</strong> in a 4-way set-associative cache is:", options:[], answer:6 },
+      { id:19, type:"MCQ", marks:1, neg:0.33, text:"Which of the following is a <strong>non-deterministic polynomial (NP)</strong> problem?", options:["Binary search","Merge sort","Travelling Salesman Problem","Matrix addition"], answer:2 },
+      { id:20, type:"MCQ", marks:1, neg:0.33, text:"In TCP, which flag is used to initiate a connection?", options:["ACK","FIN","SYN","RST"], answer:2 },
+      { id:21, type:"MCQ", marks:1, neg:0.33, text:"The language L = {aⁿbⁿcⁿ | n ≥ 1} is:", options:["Regular","Context-Free","Context-Sensitive","Recursively Enumerable only"], answer:2 },
+      { id:22, type:"MCQ", marks:1, neg:0.33, text:"Which of the following page replacement algorithms suffers from <strong>Bélády's anomaly</strong>?", options:["FIFO","LRU","Optimal","Clock"], answer:0 },
+      { id:23, type:"MCQ", marks:1, neg:0.33, text:"The output of the C expression: <code style='background:#f0f0f0;padding:1px 4px;border-radius:2px;'>printf(\"%d\", 5&3);</code> is:", options:["8","1","0","15"], answer:1 },
+      { id:24, type:"NAT",  marks:1, neg:0,   text:"A process arrives at time 0 with burst time 10ms. Using <strong>Round Robin</strong> with quantum 3ms, how many context switches occur (including the final one)?", options:[], answer:4 },
+      { id:25, type:"MCQ", marks:1, neg:0.33, text:"Which hashing technique handles collision by placing the new key in the next available slot?", options:["Chaining","Open addressing (linear probing)","Double hashing","Separate chaining"], answer:1 },
+      { id:26, type:"MCQ", marks:1, neg:0.33, text:"The <span class='highlight'>kernel</span> of an operating system does NOT typically perform which of the following?", options:["Process scheduling","Memory management","Network packet routing","User interface rendering"], answer:3 },
+      { id:27, type:"MCQ", marks:1, neg:0.33, text:"For a pipelined processor with 5 stages, the speedup over a non-pipelined processor for 100 instructions is approximately:", options:["5","20","50","100"], answer:0 },
+      { id:28, type:"MCQ", marks:1, neg:0.33, text:"Which SQL clause is used to filter groups formed by GROUP BY?", options:["WHERE","HAVING","SELECT","ORDER BY"], answer:1 },
+      { id:29, type:"NAT",  marks:1, neg:0,   text:"The minimum number of flip-flops required to design a <strong>MOD-12 counter</strong> is:", options:[], answer:4 },
+      { id:30, type:"MCQ", marks:1, neg:0.33, text:"Which of the following is the <strong>correct</strong> recurrence relation for Merge Sort?", options:["T(n) = T(n-1) + O(n)","T(n) = 2T(n/2) + O(n)","T(n) = 2T(n/2) + O(1)","T(n) = T(n/2) + O(n)"], answer:1 },
+      { id:31, type:"MCQ", marks:1, neg:0.33, text:"In a <strong>3-address instruction</strong> format with 32-bit instruction word, 8-bit opcode and three 6-bit registers, how many bits remain for other fields?", options:["6","4","12","8"], answer:1 },
+      { id:32, type:"MCQ", marks:1, neg:0.33, text:"Which scheduling algorithm can cause <strong>starvation</strong>?", options:["Round Robin","FCFS","Priority Scheduling","Shortest Job First (non-preemptive)"], answer:2 },
+      { id:33, type:"MCQ", marks:1, neg:0.33, text:"The number of distinct binary trees with <strong>4</strong> nodes is:", options:["12","14","16","18"], answer:1 },
+      { id:34, type:"MSQ", marks:1, neg:0,   text:"Which of the following are <strong>properties of a Relational Database</strong>?", options:["Tuples are ordered","Each attribute has a domain","All values in a column are of the same type","A table can have duplicate rows"], answer:[1,2] },
+      { id:35, type:"MCQ", marks:1, neg:0.33, text:"Which protocol operates at the <strong>Transport Layer</strong> of the OSI model?", options:["HTTP","IP","TCP","ARP"], answer:2 },
+      // 2-mark CS
+      { id:36, type:"MCQ", marks:2, neg:0.67, text:"Consider the following piece of code:<br><pre style='background:#f5f5f5;padding:8px;border-radius:4px;font-size:12px;margin:8px 0;'>int f(int n) {\n  if (n <= 1) return 1;\n  return f(n-1) + f(n-2);\n}</pre>What is the time complexity of <code style='background:#f0f0f0;padding:1px 4px;border-radius:2px;'>f(n)</code>?", options:["O(n)","O(n²)","O(2ⁿ)","O(n log n)"], answer:2 },
+      { id:37, type:"NAT",  marks:2, neg:0,   text:"A hash table of size 10 uses open addressing with <strong>linear probing</strong>. Keys 44, 35, 12, 17, 6, 11, 88, 24 are inserted. After all insertions, at which index is key <strong>88</strong> stored? (0-indexed, hash(k) = k mod 10)", options:[], answer:8 },
+      { id:38, type:"MCQ", marks:2, neg:0.67, text:"Which of the following sorting algorithms is <strong>NOT</strong> a comparison-based sort?", options:["Quick Sort","Heap Sort","Counting Sort","Merge Sort"], answer:2 },
+      { id:39, type:"MCQ", marks:2, neg:0.67, text:"In a system with 4 processes and 3 resource types, the maximum demand matrix M and allocation matrix A are given. The available vector is R = [1, 0, 2]. Applying the <strong>Banker's Algorithm</strong>, which sequence is safe?<br><br>M: P1=[2,1,1], P2=[3,2,1], P3=[2,1,0], P4=[1,0,2]<br>A: P1=[1,0,0], P2=[2,1,0], P3=[1,0,1], P4=[0,0,2]", options:["P1→P3→P4→P2","P4→P1→P3→P2","P3→P1→P4→P2","P2→P1→P3→P4"], answer:2 },
+      { id:40, type:"MCQ", marks:2, neg:0.67, text:"The postfix expression <strong>8 2 3 ^ / 2 3 * + 5 1 * -</strong> evaluates to:", options:["1","4","0","2"], answer:0 },
+      { id:41, type:"NAT",  marks:2, neg:0,   text:"A page table has 2²⁰ entries and each entry is 4 bytes. How much memory (in MB) does the page table occupy?", options:[], answer:4 },
+      { id:42, type:"MCQ", marks:2, neg:0.67, text:"Which of the following DFA accepts strings over {a, b} that end with <strong>ab</strong>?", options:["q0→a→q1→b→q2(final)","q0→b→q0, q0→a→q1, q1→a→q1, q1→b→q2, q2→a→q1, q2→b→q0; final={q2}","q0→a→q1, q1→b→q1; final={q1}","None of the above"], answer:1 },
+      { id:43, type:"MCQ", marks:2, neg:0.67, text:"Which of the following statements about <strong>AVL Trees</strong> is correct?", options:["The height of an AVL tree with n nodes is O(n)","Every AVL tree is also a Red-Black tree","The balance factor of every node is in {–1, 0, 1}","Rotations in AVL trees take O(n) time"], answer:2 },
+      { id:44, type:"NAT",  marks:2, neg:0,   text:"The <strong>chromatic number</strong> of a cycle graph C<sub>6</sub> is:", options:[], answer:2 },
+      { id:45, type:"MCQ", marks:2, neg:0.67, text:"Consider a network with IP address 192.168.10.0/27. What is the maximum number of <strong>usable host</strong> addresses?", options:["30","62","14","28"], answer:0 },
+      { id:46, type:"MCQ", marks:2, neg:0.67, text:"Which of the following correctly describes <strong>Deadlock Prevention</strong>?", options:["Detecting deadlocks and recovering","Allowing at most one of the four Coffman conditions","Ensuring at least one of the four necessary conditions never holds","Ignoring the possibility of deadlock"], answer:2 },
+      { id:47, type:"NAT",  marks:2, neg:0,   text:"Given grammar: S → aSb | ab. The number of strings of length 6 in the language is:", options:[], answer:1 },
+      { id:48, type:"MCQ", marks:2, neg:0.67, text:"The <strong>master theorem</strong> applied to T(n) = 3T(n/4) + n log n gives:", options:["T(n) = Θ(n log²n)","T(n) = Θ(n log n)","T(n) = Θ(n^1.5)","T(n) = Θ(n)"], answer:1 },
+      { id:49, type:"MCQ", marks:2, neg:0.67, text:"In a <strong>two-level page table</strong> system with a 32-bit address space, 4 KB pages and 4-byte entries, how many entries are in the first-level page table?", options:["256","512","1024","2048"], answer:2 },
+      { id:50, type:"MSQ", marks:2, neg:0,   text:"Which of the following problems are <strong>NP-Complete</strong>?", options:["3-SAT","Hamiltonian Cycle","Shortest Path (Dijkstra)","Subset Sum"], answer:[0,1,3] },
+      { id:51, type:"NAT",  marks:2, neg:0,   text:"In a <strong>min-heap</strong> containing elements [4, 8, 6, 9, 12, 11, 7], after calling extractMin() once, what is the root value?", options:[], answer:6 },
+      { id:52, type:"MCQ", marks:2, neg:0.67, text:"Which of the following is a correct statement about <strong>virtual memory</strong>?", options:["Virtual memory requires no hardware support","TLB (Translation Lookaside Buffer) increases address translation speed","Demand paging loads all pages at process start","Virtual memory size is limited by physical RAM"], answer:1 },
+      { id:53, type:"MCQ", marks:2, neg:0.67, text:"The output of the following C code is:<br><pre style='background:#f5f5f5;padding:8px;border-radius:4px;font-size:12px;margin:8px 0;'>int a[] = {1,2,3,4,5};\nint *p = a + 2;\nprintf(\"%d %d\", *(p-1), *(p+1));</pre>", options:["2 4","1 3","3 5","2 3"], answer:0 },
+      { id:54, type:"MCQ", marks:2, neg:0.67, text:"Consider a <strong>CSMA/CD</strong> network with propagation delay τ and frame transmission time T. For proper collision detection, which must hold?", options:["T > τ","T ≥ 2τ","T = τ","T < 2τ"], answer:1 },
+      { id:55, type:"NAT",  marks:2, neg:0,   text:"How many distinct topological orderings are possible for a DAG that is a simple path of 4 nodes (1→2→3→4)?", options:[], answer:1 },
+      { id:56, type:"MCQ", marks:2, neg:0.67, text:"Which of the following storage structures is most appropriate for implementing a <strong>symbol table</strong> in a compiler?", options:["Stack","Queue","Hash Table","Circular Buffer"], answer:2 },
+      { id:57, type:"MCQ", marks:2, neg:0.67, text:"The relation R(A, B, C, D) has functional dependencies: A→B, B→C, C→D. Which normal form violation exists?", options:["1NF violation","2NF violation","3NF violation","No violation"], answer:2 },
+      { id:58, type:"MSQ", marks:2, neg:0,   text:"Which of the following are correct about <strong>TCP</strong>?", options:["TCP provides reliable delivery","TCP is connection-oriented","TCP uses datagrams, not streams","TCP supports flow control"], answer:[0,1,3] },
+      { id:59, type:"NAT",  marks:2, neg:0,   text:"The number of <strong>1s</strong> in the binary representation of (2²⁵ – 1) is:", options:[], answer:25 },
+      { id:60, type:"MCQ", marks:2, neg:0.67, text:"The <strong>amortised time</strong> complexity of a single push/pop operation in a dynamic array (with doubling strategy) is:", options:["O(n)","O(log n)","O(1)","O(√n)"], answer:2 },
+      { id:61, type:"MCQ", marks:2, neg:0.67, text:"In the context of compiler design, which phase generates <strong>three-address code</strong>?", options:["Lexical Analysis","Syntax Analysis","Semantic Analysis / Intermediate Code Generation","Code Optimisation"], answer:2 },
+      { id:62, type:"NAT",  marks:2, neg:0,   text:"A graph has 8 vertices and is a tree. How many edges does it have?", options:[], answer:7 },
+      { id:63, type:"MCQ", marks:2, neg:0.67, text:"Which of the following cache mapping schemes has the <strong>highest miss rate</strong> in general?", options:["Direct mapped","2-way set associative","4-way set associative","Fully associative"], answer:0 },
+      { id:64, type:"MCQ", marks:2, neg:0.67, text:"The language accepted by a <strong>pushdown automaton (PDA)</strong> but NOT by any DFA is:", options:["a*b*","(ab)*","aⁿbⁿ (n ≥ 0)","(a|b)*ab"], answer:2 },
+      { id:65, type:"NAT",  marks:2, neg:0,   text:"How many distinct <strong>Boolean functions</strong> exist over 3 binary variables?", options:[], answer:256 },
+    ]
+  }
+];
+
+// ─────────────── STATE ───────────────
+const totalQs = sections.reduce((s,sec) => s + sec.questions.length, 0);
+const qStates = {}; // qId → { status, answer }
+let currentQIdx = 0; // global 0-based index
+let timerSec = 3 * 3600;
+let timerInterval;
+let examStarted = false;
+
+// Flatten questions
+const allQ = [];
+sections.forEach(sec => sec.questions.forEach(q => allQ.push({ ...q, sectionName: sec.name, sectionShort: sec.short })));
+
+// Init states
+allQ.forEach(q => { qStates[q.id] = { status: "not-visited", answer: null }; });
+
+// ─────────────── HELPERS ───────────────
+function getState(qId) { return qStates[qId]; }
+function currentQ() { return allQ[currentQIdx]; }
+
+function statusClass(qId) {
+  const s = qStates[qId];
+  if (s.status === "not-visited") return "not-visited";
+  if (s.status === "answered") return "answered";
+  if (s.status === "marked") return "marked";
+  if (s.status === "answered-marked") return "answered-marked";
+  return "not-answered";
+}
+
+// ─────────────── RENDER ───────────────
+function renderQuestion() {
+  const q = currentQ();
+  const s = qStates[q.id];
+
+  // Mark as visited
+  if (s.status === "not-visited") { s.status = "not-answered"; }
+
+  // Header
+  document.getElementById("q-num-display").textContent = q.id;
+  document.getElementById("q-counter").textContent = currentQIdx + 1;
+  document.getElementById("q-total").textContent = totalQs;
+  document.getElementById("q-type-badge").textContent = q.type;
+  document.getElementById("q-marks-display").textContent = `Marks: +${q.marks} | Negative: –${q.neg.toFixed(2)}`;
+  document.getElementById("section-label-text").textContent = "Section: " + q.sectionName;
+  document.getElementById("current-section-name").textContent = q.sectionName;
+  document.getElementById("current-q-type").textContent = q.type;
+  document.getElementById("current-marks").textContent = "+" + q.marks;
+  document.getElementById("current-neg").textContent = "–" + q.neg.toFixed(2);
+
+  // Question text
+  document.getElementById("question-text").innerHTML = q.text;
+
+  // Options / NAT
+  const optList = document.getElementById("options-list");
+  const natArea = document.getElementById("nat-input-area");
+  const natInput = document.getElementById("nat-input");
+
+  optList.innerHTML = "";
+  if (q.type === "NAT") {
+    natArea.classList.remove("hidden");
+    optList.style.display = "none";
+    natInput.value = s.answer !== null ? s.answer : "";
+    natInput.oninput = () => {};
+  } else {
+    natArea.classList.add("hidden");
+    optList.style.display = "";
+    const isMulti = (q.type === "MSQ");
+    q.options.forEach((opt, i) => {
+      const li = document.createElement("li");
+      const input = document.createElement("input");
+      input.type = isMulti ? "checkbox" : "radio";
+      input.name = "q_option";
+      input.id = "opt_" + i;
+
+      // Check if selected
+      if (isMulti) {
+        input.checked = Array.isArray(s.answer) && s.answer.includes(i);
+      } else {
+        input.checked = (s.answer === i);
+      }
+      if (input.checked) li.classList.add("selected");
+
+      input.addEventListener("change", () => selectOption(i));
+      const label = document.createElement("label");
+      label.htmlFor = "opt_" + i;
+      label.innerHTML = `<strong>(${String.fromCharCode(65+i)})</strong> &nbsp;${opt}`;
+
+      li.appendChild(input);
+      li.appendChild(label);
+      li.addEventListener("click", (e) => { if (e.target !== input) { input.click(); } });
+      optList.appendChild(li);
+    });
+  }
+
+  renderGrid();
+}
+
+function selectOption(i) {
+  const q = currentQ();
+  const s = qStates[q.id];
+  if (q.type === "MSQ") {
+    if (!Array.isArray(s.answer)) s.answer = [];
+    const idx = s.answer.indexOf(i);
+    if (idx === -1) s.answer.push(i);
+    else s.answer.splice(idx, 1);
+    if (s.answer.length === 0) s.answer = null;
+  } else {
+    s.answer = i;
+  }
+  if (s.status === "not-answered" || s.status === "not-visited") s.status = "not-answered";
+  renderQuestion();
+}
+
+function renderGrid() {
+  const grid = document.getElementById("q-grid");
+  grid.innerHTML = "";
+
+  // Find which section the current question belongs to
+  const curId = currentQ().id;
+  const activeSectionIdx = sections.findIndex(sec => sec.questions.some(q => q.id === curId));
+  const activeSec = sections[activeSectionIdx] ?? sections[0];
+
+  // Only show bubbles for the active section
+  activeSec.questions.forEach(q => {
+    const idx = allQ.findIndex(a => a.id === q.id);
+    const div = document.createElement("div");
+    div.className = "q-bubble " + statusClass(q.id);
+    if (idx === currentQIdx) div.classList.add("current");
+    div.textContent = q.id;
+    div.title = `Q${q.id} – ${q.sectionName} – ${statusClass(q.id).replace(/-/g," ")}`;
+    div.onclick = () => { currentQIdx = idx; renderQuestion(); };
+    grid.appendChild(div);
+  });
+
+  // Auto-sync section tab highlight
+  document.querySelectorAll(".section-tab").forEach((t, j) => {
+    t.classList.toggle("active", j === activeSectionIdx);
+  });
+}
+
+function renderSectionTabs() {
+  const tabs = document.getElementById("section-tabs");
+  tabs.innerHTML = "";
+  sections.forEach((sec, i) => {
+    const div = document.createElement("div");
+    div.className = "section-tab" + (i === 0 ? " active" : "");
+    div.textContent = sec.short;
+    div.title = sec.name;
+    div.onclick = () => {
+      document.querySelectorAll(".section-tab").forEach((t,j) => t.classList.toggle("active", j===i));
+      const firstId = sec.questions[0].id;
+      currentQIdx = allQ.findIndex(q => q.id === firstId);
+      renderQuestion();
+    };
+    tabs.appendChild(div);
+  });
+}
+
+// ─────────────── ACTIONS ───────────────
+function getAnswer() {
+  const q = currentQ();
+  if (q.type === "NAT") {
+    const v = document.getElementById("nat-input").value;
+    return v === "" ? null : parseFloat(v);
+  }
+  return qStates[q.id].answer;
+}
+
+function commitAnswer() {
+  const q = currentQ();
+  const s = qStates[q.id];
+  if (q.type === "NAT") {
+    const v = document.getElementById("nat-input").value;
+    s.answer = v === "" ? null : parseFloat(v);
+  }
+}
+
+function saveAndNext() {
+  commitAnswer();
+  const q = currentQ();
+  const s = qStates[q.id];
+  if (s.answer !== null && !(Array.isArray(s.answer) && s.answer.length === 0)) {
+    s.status = "answered";
+  } else {
+    s.status = "not-answered";
+  }
+  if (currentQIdx < totalQs - 1) currentQIdx++;
+  renderQuestion();
+}
+
+function saveAndMark() {
+  commitAnswer();
+  const q = currentQ();
+  const s = qStates[q.id];
+  if (s.answer !== null) s.status = "answered-marked";
+  else s.status = "marked";
+  if (currentQIdx < totalQs - 1) currentQIdx++;
+  renderQuestion();
+}
+
+function markOnly() {
+  const q = currentQ();
+  const s = qStates[q.id];
+  s.status = "marked";
+  if (currentQIdx < totalQs - 1) currentQIdx++;
+  renderQuestion();
+}
+
+function clearResponse() {
+  const q = currentQ();
+  const s = qStates[q.id];
+  s.answer = null;
+  s.status = "not-answered";
+  document.getElementById("nat-input").value = "";
+  renderQuestion();
+}
+
+function prevQuestion() {
+  if (currentQIdx > 0) { currentQIdx--; renderQuestion(); }
+}
+
+function nextQuestion() {
+  if (currentQIdx < totalQs - 1) { currentQIdx++; renderQuestion(); }
+}
+
+// ─────────────── TIMER ───────────────
+function startTimer() {
+  timerInterval = setInterval(() => {
+    timerSec--;
+    if (timerSec <= 0) { clearInterval(timerInterval); finalSubmit(); return; }
+    const h = Math.floor(timerSec / 3600).toString().padStart(2,"0");
+    const m = Math.floor((timerSec % 3600) / 60).toString().padStart(2,"0");
+    const s = (timerSec % 60).toString().padStart(2,"0");
+    document.getElementById("timer-display").textContent = `${h}:${m}:${s}`;
+    if (timerSec <= 300) document.getElementById("timer-display").style.color = "#c00";
+    if (timerSec <= 60) document.getElementById("timer-display").style.background = "#ffeeee";
+  }, 1000);
+}
+
+// ─────────────── SUBMIT ───────────────
+function buildSummary() {
+  const rows = sections.map(sec => {
+    const qs = sec.questions;
+    const answered = qs.filter(q => qStates[q.id].status === "answered" || qStates[q.id].status === "answered-marked").length;
+    const notAns = qs.filter(q => qStates[q.id].status === "not-answered").length;
+    const marked = qs.filter(q => qStates[q.id].status === "marked").length;
+    const notVis = qs.filter(q => qStates[q.id].status === "not-visited").length;
+    return { name: sec.name, total: qs.length, answered, notAns, marked, notVis };
+  });
+  const totals = { answered: rows.reduce((s,r)=>s+r.answered,0), notAns: rows.reduce((s,r)=>s+r.notAns,0), marked: rows.reduce((s,r)=>s+r.marked,0), notVis: rows.reduce((s,r)=>s+r.notVis,0), total: totalQs };
+  return { rows, totals };
+}
+
+function openSubmitModal() {
+  const { rows, totals } = buildSummary();
+  let html = `<tr><th>Section</th><th>Total</th><th style='color:#28a745'>Answered</th><th style='color:#dc3545'>Not Answered</th><th style='color:#6f42c1'>Marked</th><th style='color:#888'>Not Visited</th></tr>`;
+  rows.forEach(r => {
+    html += `<tr><td>${r.name}</td><td>${r.total}</td><td>${r.answered}</td><td>${r.notAns}</td><td>${r.marked}</td><td>${r.notVis}</td></tr>`;
+  });
+  html += `<tr style='font-weight:bold;background:#dce8f5'><td>Total</td><td>${totals.total}</td><td>${totals.answered}</td><td>${totals.notAns}</td><td>${totals.marked}</td><td>${totals.notVis}</td></tr>`;
+  document.getElementById("summary-table").innerHTML = html;
+  document.getElementById("submit-modal").classList.remove("hidden");
+}
+
+// finalSubmit is defined at bottom of file (after login system)
+function finalSubmit() { /* overridden below */ }
+
+function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
+
+// ─────────────── SCIENTIFIC CALCULATOR ───────────────
+let sc = {
+  expr: "",         // expression string shown in top line
+  current: "0",     // current number being entered
+  result: null,     // last computed result
+  angleDeg: true,   // true = DEG, false = RAD
+  memory: 0,
+  pendingOp: null,  // binary op waiting: pow, mod, nPr, nCr
+  pendingVal: null,
+  newNum: true,     // next digit press starts fresh number
+  is2nd: false,
+  parenDepth: 0,
+  fullExpr: "",     // for multi-token expression display
+  error: false
+};
+
+function openCalc() { document.getElementById("calc-modal").classList.remove("hidden"); }
+
+function scSetAngle(mode) {
+  sc.angleDeg = (mode === "deg");
+  document.getElementById("btn-deg").classList.toggle("active", sc.angleDeg);
+  document.getElementById("btn-rad").classList.toggle("active", !sc.angleDeg);
+  scUpdateDisplay();
+}
+
+function scToggle2nd() {
+  sc.is2nd = !sc.is2nd;
+  document.getElementById("btn-2nd").classList.toggle("active", sc.is2nd);
+  // Swap sin↔sin⁻¹ etc labels
+  const pairs = [
+    ["sc-sin","sin","sin⁻¹","asin"],
+    ["sc-cos","cos","cos⁻¹","acos"],
+    ["sc-tan","tan","tan⁻¹","atan"]
+  ];
+  pairs.forEach(([id, norm, inv, fnInv]) => {
+    const b = document.getElementById(id);
+    b.textContent = sc.is2nd ? inv : norm;
+    b.onclick = () => scAction(sc.is2nd ? fnInv : norm);
+  });
+}
+
+function scToRad(x) { return sc.angleDeg ? x * Math.PI / 180 : x; }
+function scFromRad(x) { return sc.angleDeg ? x * 180 / Math.PI : x; }
+
+function scFmt(n) {
+  if (!isFinite(n)) return "Error";
+  if (Number.isInteger(n) && Math.abs(n) < 1e15) return n.toString();
+  // up to 10 significant figures, strip trailing zeros
+  let s = parseFloat(n.toPrecision(10)).toString();
+  return s;
+}
+
+function factorial(n) {
+  n = Math.round(n);
+  if (n < 0 || n > 170) return NaN;
+  if (n === 0 || n === 1) return 1;
+  let r = 1; for (let i = 2; i <= n; i++) r *= i; return r;
+}
+function nPr(n, r) { n=Math.round(n); r=Math.round(r); if(r>n||r<0) return NaN; return factorial(n)/factorial(n-r); }
+function nCr(n, r) { n=Math.round(n); r=Math.round(r); if(r>n||r<0) return NaN; return factorial(n)/(factorial(r)*factorial(n-r)); }
+
+function scUpdateDisplay() {
+  if (sc.error) {
+    document.getElementById("sc-disp").textContent = "Error";
+    document.getElementById("sc-expr").textContent = sc.fullExpr || "";
+    document.getElementById("sc-mode").textContent = (sc.angleDeg ? "DEG" : "RAD") + " | " + (sc.memory !== 0 ? "M=" + sc.memory : "Normal");
+    return;
+  }
+  document.getElementById("sc-disp").textContent = sc.current;
+  document.getElementById("sc-expr").textContent = sc.fullExpr || sc.expr || "";
+  document.getElementById("sc-mode").textContent = (sc.angleDeg ? "DEG" : "RAD") + " | " + (sc.memory !== 0 ? "M=" + sc.memory : "Normal");
+}
+
+function scAction(v) {
+  if (sc.error && v !== "AC" && v !== "CE") return;
+  const cur = parseFloat(sc.current);
+
+  // ── MEMORY ──
+  if (v === "MC") { sc.memory = 0; scUpdateDisplay(); return; }
+  if (v === "MR") { sc.current = scFmt(sc.memory); sc.newNum = false; scUpdateDisplay(); return; }
+  if (v === "M+") { sc.memory = +(sc.memory + cur).toPrecision(10); scUpdateDisplay(); return; }
+  if (v === "M-") { sc.memory = +(sc.memory - cur).toPrecision(10); scUpdateDisplay(); return; }
+
+  // ── CLEAR ──
+  if (v === "AC") {
+    sc.expr=""; sc.current="0"; sc.result=null; sc.pendingOp=null;
+    sc.pendingVal=null; sc.newNum=true; sc.parenDepth=0;
+    sc.fullExpr=""; sc.error=false; sc.is2nd=false;
+    scUpdateDisplay(); return;
+  }
+  if (v === "CE") { sc.current = "0"; sc.newNum = true; scUpdateDisplay(); return; }
+  if (v === "BS") {
+    if (sc.current.length > 1) sc.current = sc.current.slice(0,-1);
+    else sc.current = "0";
+    scUpdateDisplay(); return;
+  }
+
+  // ── CONSTANTS ──
+  if (v === "pi") { sc.current = scFmt(Math.PI); sc.newNum = false; sc.fullExpr += "π"; scUpdateDisplay(); return; }
+  if (v === "eul") { sc.current = scFmt(Math.E); sc.newNum = false; sc.fullExpr += "e"; scUpdateDisplay(); return; }
+
+  // ── UNARY FUNCTIONS ──
+  const unary = {
+    "sqrt":  x => { sc.fullExpr = `√(${sc.current})`; return Math.sqrt(x); },
+    "cbrt":  x => { sc.fullExpr = `∛(${sc.current})`; return Math.cbrt(x); },
+    "sq":    x => { sc.fullExpr = `(${sc.current})²`; return x*x; },
+    "cube":  x => { sc.fullExpr = `(${sc.current})³`; return x*x*x; },
+    "recip": x => { sc.fullExpr = `1/(${sc.current})`; return x===0 ? NaN : 1/x; },
+    "abs":   x => { sc.fullExpr = `|${sc.current}|`; return Math.abs(x); },
+    "fact":  x => { sc.fullExpr = `${sc.current}!`; return factorial(x); },
+    "log10": x => { sc.fullExpr = `log(${sc.current})`; return Math.log10(x); },
+    "ln":    x => { sc.fullExpr = `ln(${sc.current})`; return Math.log(x); },
+    "log2":  x => { sc.fullExpr = `log₂(${sc.current})`; return Math.log2(x); },
+    "exp":   x => { sc.fullExpr = `e^(${sc.current})`; return Math.exp(x); },
+    "sin":   x => { sc.fullExpr = `sin(${sc.current}°)`; return Math.sin(scToRad(x)); },
+    "cos":   x => { sc.fullExpr = `cos(${sc.current}°)`; return Math.cos(scToRad(x)); },
+    "tan":   x => { sc.fullExpr = `tan(${sc.current}°)`; return Math.tan(scToRad(x)); },
+    "asin":  x => { sc.fullExpr = `sin⁻¹(${sc.current})`; return scFromRad(Math.asin(x)); },
+    "acos":  x => { sc.fullExpr = `cos⁻¹(${sc.current})`; return scFromRad(Math.acos(x)); },
+    "atan":  x => { sc.fullExpr = `tan⁻¹(${sc.current})`; return scFromRad(Math.atan(x)); },
+  };
+  if (unary[v]) {
+    const res = unary[v](cur);
+    if (isNaN(res) || !isFinite(res)) { sc.error = true; scUpdateDisplay(); return; }
+    sc.current = scFmt(res);
+    sc.newNum = true; scUpdateDisplay(); return;
+  }
+
+  // ── BINARY OPS requiring second operand ──
+  if (v === "pow" || v === "mod" || v === "nPr" || v === "nCr") {
+    sc.pendingOp = v; sc.pendingVal = cur;
+    const sym = { pow:"^", mod:" mod ", nPr:"P", nCr:"C" };
+    sc.fullExpr = sc.current + sym[v];
+    sc.newNum = true; scUpdateDisplay(); return;
+  }
+
+  // ── STANDARD BINARY OPS ──
+  if (["+","-","*","/"].includes(v)) {
+    if (sc.pendingOp && !sc.newNum) {
+      sc.pendingVal = scEvalBinary(sc.pendingVal, cur, sc.pendingOp);
+      sc.pendingOp = null;
+    }
+    sc.pendingOp = v; sc.pendingVal = cur;
+    const sym = {"+":"+","-":"−","*":"×","/":"÷"};
+    sc.fullExpr = sc.current + " " + sym[v] + " ";
+    sc.newNum = true; scUpdateDisplay(); return;
+  }
+
+  // ── EQUALS ──
+  if (v === "=") {
+    if (sc.pendingOp !== null && sc.pendingVal !== null) {
+      const sym = {"+":"+","-":"−","*":"×","/":"÷","pow":"^","mod":"mod","nPr":"P","nCr":"C"};
+      sc.fullExpr = scFmt(sc.pendingVal) + " " + (sym[sc.pendingOp]||sc.pendingOp) + " " + sc.current + " =";
+      const res = scEvalBinary(sc.pendingVal, cur, sc.pendingOp);
+      if (!isFinite(res) || isNaN(res)) { sc.error = true; scUpdateDisplay(); return; }
+      sc.current = scFmt(res);
+      sc.pendingOp = null; sc.pendingVal = null; sc.newNum = true;
+    }
+    scUpdateDisplay(); return;
+  }
+
+  // ── PARENTHESES (visual only — appended to expr) ──
+  if (v === "(") { sc.fullExpr += "("; sc.parenDepth++; scUpdateDisplay(); return; }
+  if (v === ")") { if(sc.parenDepth>0){ sc.fullExpr += ")"; sc.parenDepth--; } scUpdateDisplay(); return; }
+
+  // ── DIGITS & DOT ──
+  if (v === ".") {
+    if (sc.newNum) { sc.current = "0."; sc.newNum = false; }
+    else if (!sc.current.includes(".")) sc.current += ".";
+    scUpdateDisplay(); return;
+  }
+  // digit
+  if (sc.newNum) { sc.current = v; sc.newNum = false; }
+  else { sc.current = sc.current === "0" ? v : sc.current + v; }
+  scUpdateDisplay();
+}
+
+function scEvalBinary(a, b, op) {
+  a = parseFloat(a); b = parseFloat(b);
+  if (op === "+") return +(a+b).toPrecision(12)*1;
+  if (op === "-") return +(a-b).toPrecision(12)*1;
+  if (op === "*") return +(a*b).toPrecision(12)*1;
+  if (op === "/") return b===0 ? Infinity : +(a/b).toPrecision(12)*1;
+  if (op === "pow") return Math.pow(a,b);
+  if (op === "mod") return a % b;
+  if (op === "nPr") return nPr(a,b);
+  if (op === "nCr") return nCr(a,b);
+  return b;
+}
+
+// keep old openCalc alias safe
+function calcAction() {} // stub — replaced by scAction above
+
+// ─────────────── DMS CALCULATOR ───────────────
+// Internal storage: all angles as total decimal degrees
+let dms = {
+  operandA: null,   // decimal degrees
+  pendingOp: null,  // '+' '-' '*' '/'
+};
+
+function switchCalcTab(tab) {
+  document.getElementById('panel-sci').style.display = tab === 'sci' ? '' : 'none';
+  document.getElementById('panel-dms').style.display = tab === 'dms' ? '' : 'none';
+  document.getElementById('tab-sci').classList.toggle('active', tab === 'sci');
+  document.getElementById('tab-dms').classList.toggle('active', tab === 'dms');
+}
+
+// Parse the three DMS input fields → decimal degrees
+function dmsReadInputs() {
+  const d = parseFloat(document.getElementById('dms-d').value) || 0;
+  const m = parseFloat(document.getElementById('dms-m').value) || 0;
+  const s = parseFloat(document.getElementById('dms-s').value) || 0;
+  if (m < 0 || m >= 60 || s < 0 || s >= 60) {
+    dmsShowError('Minutes and seconds must be 0–59');
+    return null;
+  }
+  return d + m / 60 + s / 3600;
+}
+
+// Convert decimal degrees → { d, m, s }
+function decToDMS(dec) {
+  const neg = dec < 0;
+  dec = Math.abs(dec);
+  const d = Math.floor(dec);
+  const rem1 = (dec - d) * 60;
+  const m = Math.floor(rem1);
+  const s = parseFloat(((rem1 - m) * 60).toFixed(4));
+  return { d: neg ? -d : d, m, s };
+}
+
+// Format DMS object to string  e.g.  30° 15′ 45.0000″
+function fmtDMS(obj) {
+  const sign = obj.d < 0 ? '−' : '';
+  return `${sign}${Math.abs(obj.d)}° ${obj.m}′ ${obj.s}″`;
+}
+
+function dmsUpdateLiveDisplay() {
+  const d = parseFloat(document.getElementById('dms-d').value) || 0;
+  const m = parseFloat(document.getElementById('dms-m').value) || 0;
+  const s = parseFloat(document.getElementById('dms-s').value) || 0;
+  document.getElementById('dms-disp').textContent = `${d}° ${m}′ ${s}″`;
+}
+// Attach live update to inputs
+['dms-d','dms-m','dms-s'].forEach(id => {
+  document.addEventListener('DOMContentLoaded', () => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', dmsUpdateLiveDisplay);
+  });
+});
+
+function dmsSetOperand() {
+  const val = dmsReadInputs();
+  if (val === null) return;
+  dms.operandA = val;
+  const obj = decToDMS(val);
+  document.getElementById('dms-expr').textContent =
+    `Operand A set: ${fmtDMS(obj)}  (${val.toFixed(6)}°)`;
+  document.getElementById('dms-mode').textContent =
+    dms.pendingOp
+      ? `Ready: A ${dms.pendingOp} B  — now enter B and press an operation`
+      : 'Operand A stored. Choose an operation.';
+}
+
+function dmsBinOp(op) {
+  // If no operand A yet, set it from current inputs
+  if (dms.operandA === null) {
+    const val = dmsReadInputs();
+    if (val === null) return;
+    dms.operandA = val;
+  }
+  // If operand A exists AND pending op exists, compute first (chaining)
+  if (dms.pendingOp !== null) {
+    const valB = dmsReadInputs();
+    if (valB === null) return;
+    dms.operandA = dmsCompute(dms.operandA, valB, dms.pendingOp);
+    if (dms.operandA === null) return;
+  }
+  dms.pendingOp = op;
+  const obj = decToDMS(dms.operandA);
+  const opSym = {'+':'＋','-':'－','*':'×','/':'÷'};
+  document.getElementById('dms-expr').textContent =
+    `${fmtDMS(obj)} ${opSym[op]}`;
+  document.getElementById('dms-mode').textContent =
+    `Enter second value (B), then press = or any op`;
+
+  // Show pending result area cue
+  document.getElementById('dms-res-dms').textContent = '...waiting for B';
+  document.getElementById('dms-res-dec').textContent = '';
+
+  // Auto-compute when user presses op or = — for that we also expose an = button approach:
+  // Actually compute immediately using current input fields as B
+  const valB = dmsReadInputs();
+  if (valB === null) return;
+  const result = dmsCompute(dms.operandA, valB, op);
+  if (result === null) return;
+  dmsShowResult(dms.operandA, valB, op, result);
+  dms.operandA = result;   // chain: result becomes new A
+  dms.pendingOp = null;
+}
+
+function dmsCompute(a, b, op) {
+  // For * and / use scalar if b would be 0 or we use scalar field
+  if (op === '*') {
+    const scalar = parseFloat(document.getElementById('dms-scalar').value) || 1;
+    // multiply A by scalar (ignore b for mul/div, use scalar)
+    return a * scalar;
+  }
+  if (op === '/') {
+    const scalar = parseFloat(document.getElementById('dms-scalar').value) || 1;
+    if (scalar === 0) { dmsShowError('Cannot divide by zero'); return null; }
+    return a / scalar;
+  }
+  if (op === '+') return a + b;
+  if (op === '-') return a - b;
+  return null;
+}
+
+function dmsShowResult(a, b, op, result) {
+  const objA = decToDMS(a);
+  const objB = decToDMS(b);
+  const objR = decToDMS(result);
+  const opSym = {'+':'＋','-':'－','*':'×','/':'÷'};
+  const scalar = parseFloat(document.getElementById('dms-scalar').value) || 1;
+  const bLabel = (op === '*' || op === '/') ? scalar : fmtDMS(objB);
+  document.getElementById('dms-expr').textContent =
+    `${fmtDMS(objA)}  ${opSym[op]}  ${bLabel}  =`;
+  document.getElementById('dms-res-dms').textContent = fmtDMS(objR);
+  document.getElementById('dms-res-dec').textContent =
+    `= ${result.toFixed(8)}°  |  ${(result * 3600).toFixed(4)}″ total`;
+  document.getElementById('dms-mode').textContent = 'Result shown below ↓ (stored as new A)';
+}
+
+function dmsShowError(msg) {
+  document.getElementById('dms-res-dms').textContent = '⚠ ' + msg;
+  document.getElementById('dms-res-dec').textContent = '';
+}
+
+function dmsToDecimal() {
+  const val = dmsReadInputs();
+  if (val === null) return;
+  document.getElementById('dms-res-dms').textContent = `${val.toFixed(8)}°`;
+  document.getElementById('dms-res-dec').textContent =
+    `= ${(val * 60).toFixed(6)}′ total  |  ${(val * 3600).toFixed(4)}″ total`;
+  document.getElementById('dms-expr').textContent = 'DMS → Decimal';
+}
+
+function decimalToDms() {
+  const raw = document.getElementById('dms-d').value;
+  const dec = parseFloat(raw);
+  if (isNaN(dec)) { dmsShowError('Enter a decimal degree value in the Degrees field'); return; }
+  const obj = decToDMS(dec);
+  document.getElementById('dms-m').value = obj.m;
+  document.getElementById('dms-s').value = obj.s;
+  document.getElementById('dms-disp').textContent = fmtDMS(obj);
+  document.getElementById('dms-res-dms').textContent = fmtDMS(obj);
+  document.getElementById('dms-res-dec').textContent = `Input: ${dec.toFixed(8)}°`;
+  document.getElementById('dms-expr').textContent = 'Decimal° → DMS';
+}
+
+function dmsNormalize() {
+  const val = dmsReadInputs();
+  if (val === null) return;
+  // Normalize to 0–360 range
+  const norm = ((val % 360) + 360) % 360;
+  const obj = decToDMS(norm);
+  document.getElementById('dms-d').value = obj.d;
+  document.getElementById('dms-m').value = obj.m;
+  document.getElementById('dms-s').value = obj.s;
+  document.getElementById('dms-disp').textContent = fmtDMS(obj);
+  document.getElementById('dms-res-dms').textContent = fmtDMS(obj);
+  document.getElementById('dms-res-dec').textContent = `Normalized: ${norm.toFixed(8)}°`;
+  document.getElementById('dms-expr').textContent = 'Normalize → 0°–360°';
+}
+
+function dmsClear() {
+  ['dms-d','dms-m','dms-s'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('dms-scalar').value = '2';
+  document.getElementById('dms-disp').textContent = "0° 0′ 0″";
+  document.getElementById('dms-expr').textContent = '';
+  document.getElementById('dms-mode').textContent = "DMS Mode — Enter D° M′ S″";
+  document.getElementById('dms-res-dms').textContent = '—';
+  document.getElementById('dms-res-dec').textContent = '—';
+  dms.operandA = null; dms.pendingOp = null;
+}
+
+// Wire up live input listeners after DOM ready (fallback for immediate execution)
+['dms-d','dms-m','dms-s'].forEach(id => {
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', dmsUpdateLiveDisplay);
+  }, 0);
+});
+
+// ─────────────── CANDIDATE SESSION ───────────────
+let candidateInfo = { name: "", email: "", roll: "" };
+const ADMIN_PASSWORD = "gate2025admin"; // ← Change this to your preferred password
+const STORAGE_KEY    = "gate_submissions_2025";
+
+// ─────────────── LOGIN ───────────────
+// Gmail → display name derivation (heuristic: parse local part)
+function deriveNameFromEmail(email) {
+  const local = email.split("@")[0];
+  // strip numbers at end, replace dots/underscores/hyphens with spaces, title-case
+  const cleaned = local.replace(/[._\-]/g, " ").replace(/\d+$/g, "").trim();
+  return cleaned.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+}
+
+function onEmailInput() {
+  const email = document.getElementById("login-email").value.trim();
+  const preview = document.getElementById("login-name-preview");
+  const nameField = document.getElementById("login-name-field");
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    const derived = deriveNameFromEmail(email);
+    document.getElementById("login-name-text").textContent = "Hello, " + derived + "!";
+    preview.classList.add("show");
+    nameField.style.display = "none";
+    document.getElementById("login-name-input").value = derived;
+  } else {
+    preview.classList.remove("show");
+    nameField.style.display = "block";
+  }
+  validateLoginForm();
+}
+
+function onNameInput() { validateLoginForm(); }
+
+function validateLoginForm() {
+  const email = document.getElementById("login-email").value.trim();
+  const roll  = document.getElementById("login-roll").value.trim();
+  const name  = document.getElementById("login-name-input").value.trim() ||
+                document.getElementById("login-name-text").textContent.replace("Hello, ","").replace("!","").trim();
+  const valid = /^[^\s@]+@gmail\.com$/.test(email) && roll.length >= 5 && name.length >= 2;
+  document.getElementById("btn-login").disabled = !valid;
+}
+
+function doLogin() {
+  const email = document.getElementById("login-email").value.trim();
+  const roll  = document.getElementById("login-roll").value.trim();
+  const name  = document.getElementById("login-name-input").value.trim() ||
+                deriveNameFromEmail(email);
+  candidateInfo = { name, email, roll, loginTime: Date.now() };
+
+  // Update header
+  document.getElementById("cand-name").textContent = name.toUpperCase();
+  document.querySelectorAll(".candidate-details strong").forEach(el => el.textContent = name.toUpperCase());
+
+  // Register candidate in storage (status: inprogress)
+  saveSubmission({ ...candidateInfo, status: "inprogress", score: null, attempted: 0, timeTaken: null, qStates: null });
+
+  // Hide login
+  document.getElementById("login-screen").style.display = "none";
+  // Show instruction screen
+  document.getElementById("instruction-screen").style.display = "";
+}
+
+// ─────────────── ADMIN ───────────────
+function showAdminLogin() { document.getElementById("admin-login-modal").classList.remove("hidden"); }
+
+function doAdminLogin() {
+  const pass = document.getElementById("admin-pass-input").value;
+  if (pass === ADMIN_PASSWORD) {
+    closeModal("admin-login-modal");
+    document.getElementById("login-screen").style.display = "none";
+    showAdminPanel();
+  } else {
+    document.getElementById("admin-pass-err").textContent = "❌ Incorrect password. Try again.";
+  }
+}
+
+function adminLogout() {
+  document.getElementById("admin-screen").style.display = "none";
+  document.getElementById("login-screen").style.display = "flex";
+  document.getElementById("admin-pass-input").value = "";
+  document.getElementById("admin-pass-err").textContent = "";
+}
+
+function showAdminPanel() {
+  document.getElementById("admin-screen").style.display = "block";
+  renderAdminStats();
+  renderAdminTable();
+}
+
+function getAllSubmissions() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+  catch(e) { return []; }
+}
+
+function saveSubmission(record) {
+  const all = getAllSubmissions();
+  const idx = all.findIndex(r => r.email === record.email);
+  if (idx >= 0) all[idx] = { ...all[idx], ...record };
+  else all.push(record);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+}
+
+function renderAdminStats() {
+  const all = getAllSubmissions();
+  const submitted   = all.filter(r => r.status === "submitted").length;
+  const inprogress  = all.filter(r => r.status === "inprogress").length;
+  const avgScore    = all.filter(r => r.score !== null).length
+    ? (all.filter(r=>r.score!==null).reduce((s,r)=>s+r.score,0) / all.filter(r=>r.score!==null).length).toFixed(1)
+    : "—";
+  document.getElementById("admin-stats").innerHTML = `
+    <div class="stat-card"><div class="stat-num">${all.length}</div><div class="stat-label">Total Candidates</div></div>
+    <div class="stat-card green"><div class="stat-num">${submitted}</div><div class="stat-label">Submitted</div></div>
+    <div class="stat-card orange"><div class="stat-num">${inprogress}</div><div class="stat-label">In Progress</div></div>
+    <div class="stat-card red"><div class="stat-num">${avgScore}</div><div class="stat-label">Avg Score / 100</div></div>`;
+}
+
+function renderAdminTable() {
+  let all = getAllSubmissions();
+  const search = (document.getElementById("admin-search")?.value || "").toLowerCase();
+  const filter = document.getElementById("admin-filter")?.value || "all";
+  if (search) all = all.filter(r =>
+    r.name.toLowerCase().includes(search) ||
+    r.email.toLowerCase().includes(search) ||
+    r.roll.toLowerCase().includes(search));
+  if (filter !== "all") all = all.filter(r => r.status === filter);
+
+  const tbody = document.getElementById("admin-table-body");
+  const empty = document.getElementById("admin-empty");
+  if (all.length === 0) { tbody.innerHTML=""; empty.style.display="block"; return; }
+  empty.style.display = "none";
+
+  tbody.innerHTML = all.map((r,i) => {
+    const badge = r.status === "submitted"
+      ? '<span class="badge badge-green">Submitted</span>'
+      : '<span class="badge badge-orange">In Progress</span>';
+    const score = r.score !== null ? r.score.toFixed(2) : "—";
+    const time  = r.timeTaken ? fmtSeconds(r.timeTaken) : "—";
+    return `<tr>
+      <td>${i+1}</td>
+      <td><strong>${r.name}</strong></td>
+      <td>${r.email}</td>
+      <td>${r.roll}</td>
+      <td>${r.attempted ?? "—"}</td>
+      <td>${score !== "—" ? `<strong style="color:${r.score>=40?"#28a745":"#dc3545"}">${score}</strong>` : "—"}</td>
+      <td>${time}</td>
+      <td>${badge}</td>
+      <td><button class="btn-view-detail" onclick="viewStudentDetail('${r.email}')">View Detail</button></td>
+    </tr>`;
+  }).join("");
+}
+
+function fmtSeconds(sec) {
+  const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+  return h>0 ? `${h}h ${m}m` : `${m}m ${s}s`;
+}
+
+function viewStudentDetail(email) {
+  const all = getAllSubmissions();
+  const r = all.find(s => s.email === email);
+  if (!r) return;
+  document.getElementById("detail-modal-title").textContent = `📋 ${r.name} — Response Sheet`;
+
+  let html = `<div style="background:#e8f0f8;border-radius:6px;padding:12px 16px;margin-bottom:14px;font-size:12px;">
+    <strong>Name:</strong> ${r.name} &nbsp;|&nbsp; <strong>Email:</strong> ${r.email} &nbsp;|&nbsp;
+    <strong>Roll:</strong> ${r.roll} &nbsp;|&nbsp; <strong>Score:</strong> ${r.score !== null ? r.score.toFixed(2)+"/100" : "—"}
+  </div>`;
+
+  if (r.qStates && r.qStates.length) {
+    r.qStates.forEach((qs, idx) => {
+      const q = allQ[idx];
+      if (!q) return;
+      const ans = qs.answer;
+      const correct = q.answer;
+      let verdict = "skipped", verdictClass = "detail-skipped";
+
+      if (ans !== null && !(Array.isArray(ans) && ans.length===0)) {
+        if (q.type === "MCQ") {
+          verdict = ans === correct ? "✔ Correct" : "✘ Wrong";
+          verdictClass = ans === correct ? "detail-correct" : "detail-wrong";
+        } else if (q.type === "NAT") {
+          verdict = parseFloat(ans) === correct ? "✔ Correct" : "✘ Wrong";
+          verdictClass = parseFloat(ans) === correct ? "detail-correct" : "detail-wrong";
+        } else if (q.type === "MSQ") {
+          const ca = Array.isArray(correct) ? correct : [correct];
+          const sa = Array.isArray(ans) ? ans : [ans];
+          const ok = ca.every(x=>sa.includes(x)) && sa.every(x=>ca.includes(x));
+          verdict = ok ? "✔ Correct" : "✘ Wrong";
+          verdictClass = ok ? "detail-correct" : "detail-wrong";
+        }
+      }
+
+      let ansText = "—";
+      if (ans !== null) {
+        if (q.type === "NAT") ansText = ans;
+        else if (Array.isArray(ans)) ansText = ans.map(i => `(${String.fromCharCode(65+i)})`).join(", ");
+        else ansText = `(${String.fromCharCode(65+ans)}) ${q.options[ans]}`;
+      }
+
+      html += `<div class="detail-q">
+        <div class="detail-q-header">
+          <span>Q${q.id} — ${q.sectionName} — ${q.type} — ${q.marks} mark(s)</span>
+          <span class="${verdictClass}">${verdict}</span>
+        </div>
+        <div class="detail-q-body">
+          <div style="margin-bottom:6px;">${q.text}</div>
+          <div><strong>Student's Answer:</strong> ${ansText}</div>
+        </div>
+      </div>`;
+    });
+  } else {
+    html += "<p style='color:#888;text-align:center;'>No response data available (exam not completed).</p>";
+  }
+
+  document.getElementById("detail-modal-body").innerHTML = html;
+  document.getElementById("detail-modal").classList.remove("hidden");
+}
+
+function exportCSV() {
+  const all = getAllSubmissions();
+  if (!all.length) { alert("No submissions to export."); return; }
+  const header = ["Name","Email","Roll","Attempted","Score","TimeTaken","Status"];
+  const rows = all.map(r => [r.name, r.email, r.roll, r.attempted??0, r.score??0, r.timeTaken??0, r.status]);
+  const csv = [header, ...rows].map(r => r.map(v => `"${v}"`).join(",")).join("\n");
+  const blob = new Blob([csv], { type:"text/csv" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = "gate2025_submissions.csv"; a.click();
+}
+
+function clearAllData() {
+  if (confirm("Are you sure you want to delete ALL student data? This cannot be undone.")) {
+    localStorage.removeItem(STORAGE_KEY);
+    renderAdminStats(); renderAdminTable();
+  }
+}
+
+// ─────────────── PDF GENERATION ───────────────
+let lastScore = 0;
+let lastTimeTaken = 0;
+
+function downloadPDF() {
+  // Build a full HTML answer sheet and open it in a new window for printing/saving as PDF
+  const { rows: secRows, totals } = buildSummary();
+
+  // ── Helper: strip HTML tags for plain text ──
+  function stripHtml(html) {
+    return html.replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
+  }
+
+  // ── Build question rows HTML ──
+  let questionsHtml = '';
+  allQ.forEach((q, idx) => {
+    const qs = qStates[q.id];
+    const ans = qs.answer;
+    const hasAns = ans !== null && !(Array.isArray(ans) && ans.length === 0);
+
+    // Verdict
+    let verdict = 'Skipped', verdictClass = 'skipped';
+    if (hasAns) {
+      if (q.type === 'MCQ') {
+        const ok = ans === q.answer;
+        verdict = ok ? '✔ Correct' : '✘ Wrong';
+        verdictClass = ok ? 'correct' : 'wrong';
+      } else if (q.type === 'NAT') {
+        const ok = parseFloat(ans) === q.answer;
+        verdict = ok ? '✔ Correct' : '✘ Wrong';
+        verdictClass = ok ? 'correct' : 'wrong';
+      } else if (q.type === 'MSQ') {
+        const ca = Array.isArray(q.answer) ? q.answer : [q.answer];
+        const sa = Array.isArray(ans) ? ans : [ans];
+        const ok = ca.every(x => sa.includes(x)) && sa.every(x => ca.includes(x));
+        verdict = ok ? '✔ Correct' : '✘ Partially/Wrong';
+        verdictClass = ok ? 'correct' : 'wrong';
+      }
+    }
+
+    // Marks display
+    let marksEarned = '0';
+    if (hasAns) {
+      if (verdictClass === 'correct') marksEarned = '+' + q.marks;
+      else if (verdictClass === 'wrong' && q.neg > 0) marksEarned = '−' + q.neg.toFixed(2);
+      else if (verdictClass === 'wrong') marksEarned = '0';
+    }
+
+    // Options HTML
+    let optionsHtml = '';
+    if (q.options && q.options.length) {
+      optionsHtml = '<div class="options">';
+      q.options.forEach((opt, oi) => {
+        const letter = String.fromCharCode(65 + oi);
+        const isSelected = Array.isArray(ans) ? ans.includes(oi) : ans === oi;
+        const isCorrect  = Array.isArray(q.answer) ? q.answer.includes(oi) : q.answer === oi;
+        let cls = 'option';
+        if (isSelected && isCorrect)  cls += ' opt-correct-selected';
+        else if (isSelected && !isCorrect) cls += ' opt-wrong-selected';
+        else if (!isSelected && isCorrect) cls += ' opt-correct-unselected';
+        const icon = isSelected ? '▶' : '○';
+        optionsHtml += `<div class="${cls}"><span class="opt-icon">${icon}</span> <strong>(${letter})</strong> ${opt}</div>`;
+      });
+      optionsHtml += '</div>';
+
+      // Correct answer key
+      if (q.type === 'MCQ') {
+        const cl = String.fromCharCode(65 + q.answer);
+        optionsHtml += `<div class="answer-key">Correct Answer: <strong>(${cl})</strong></div>`;
+      } else if (q.type === 'MSQ') {
+        const letters = (Array.isArray(q.answer)?q.answer:[q.answer]).map(i=>`(${String.fromCharCode(65+i)})`).join(', ');
+        optionsHtml += `<div class="answer-key">Correct Answer(s): <strong>${letters}</strong></div>`;
+      }
+    }
+
+    // NAT answer
+    let natHtml = '';
+    if (q.type === 'NAT') {
+      natHtml = `<div class="nat-row">
+        <span>Your Answer: <strong class="${verdictClass}">${hasAns ? ans : 'Not Attempted'}</strong></span>
+        <span style="margin-left:24px;">Correct Answer: <strong class="correct">${q.answer}</strong></span>
+      </div>`;
+    }
+
+    questionsHtml += `
+    <div class="question-block">
+      <div class="q-header ${verdictClass}">
+        <span class="q-num">Q${q.id} &nbsp;|&nbsp; ${q.sectionName} &nbsp;|&nbsp; ${q.type} &nbsp;|&nbsp; ${q.marks} Mark(s)</span>
+        <span class="q-verdict">${verdict} &nbsp; <span class="marks-earned">[${marksEarned}]</span></span>
+      </div>
+      <div class="q-body">
+        <div class="q-text">${q.text}</div>
+        ${optionsHtml}
+        ${natHtml}
+      </div>
+    </div>`;
+  });
+
+  // ── Summary rows ──
+  let summaryRows = secRows.map(r => `
+    <tr>
+      <td>${r.name}</td><td>${r.total}</td><td class="green">${r.answered}</td>
+      <td class="red">${r.notAns}</td><td class="purple">${r.marked}</td><td class="gray">${r.notVis}</td>
+    </tr>`).join('');
+  summaryRows += `<tr class="total-row"><td>Total</td><td>${totals.total}</td><td class="green">${totals.answered}</td><td class="red">${totals.notAns}</td><td class="purple">${totals.marked}</td><td class="gray">${totals.notVis}</td></tr>`;
+
+  // ── Final HTML document ──
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GATE 2025 Answer Sheet — ${candidateInfo.name}</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Arial, sans-serif; font-size: 12px; color: #111; background: #fff; }
+
+  /* Header */
+  .doc-header { background: #1a3e6e; color: #fff; padding: 18px 24px; }
+  .doc-header h1 { font-size: 18px; margin-bottom: 4px; }
+  .doc-header p  { font-size: 11px; color: #aac; }
+
+  /* Candidate box */
+  .cand-box {
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: #e8f0f8; border: 1px solid #1a3e6e;
+    border-radius: 6px; padding: 14px 18px; margin: 14px 18px; gap: 6px 20px;
+  }
+  .cand-box .field { font-size: 12px; }
+  .cand-box .field strong { color: #1a3e6e; }
+  .score-big { font-size: 22px; font-weight: bold; color: ${lastScore >= 40 ? '#28a745' : '#dc3545'}; }
+
+  /* Summary table */
+  .summary-wrap { margin: 0 18px 16px; }
+  .summary-wrap h2 { font-size: 13px; color: #1a3e6e; border-bottom: 2px solid #1a3e6e; padding-bottom: 4px; margin-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  th { background: #1a3e6e; color: #fff; padding: 7px 10px; text-align: center; }
+  td { padding: 6px 10px; border-bottom: 1px solid #ddd; text-align: center; }
+  tr:nth-child(even) td { background: #f5f8ff; }
+  .total-row td { font-weight: bold; background: #dce8f5 !important; }
+  .green  { color: #28a745; font-weight: bold; }
+  .red    { color: #dc3545; font-weight: bold; }
+  .purple { color: #6f42c1; font-weight: bold; }
+  .gray   { color: #888; }
+
+  /* Questions */
+  .questions-wrap { margin: 0 18px; }
+  .questions-wrap h2 { font-size: 13px; color: #1a3e6e; border-bottom: 2px solid #1a3e6e; padding-bottom: 4px; margin-bottom: 10px; }
+  .question-block { border: 1px solid #ccc; border-radius: 6px; margin-bottom: 12px; overflow: hidden; page-break-inside: avoid; }
+  .q-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; color: #fff; font-size: 11px; font-weight: bold; }
+  .q-header.correct  { background: #28a745; }
+  .q-header.wrong    { background: #dc3545; }
+  .q-header.skipped  { background: #888; }
+  .q-verdict { font-size: 12px; }
+  .marks-earned { font-size: 10px; opacity: .85; }
+  .q-body { padding: 10px 14px; }
+  .q-text { font-size: 12.5px; line-height: 1.7; margin-bottom: 10px; color: #111; }
+  .options { display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; }
+  .option { padding: 5px 10px; border-radius: 4px; font-size: 11.5px; border: 1px solid #ddd; display: flex; align-items: flex-start; gap: 6px; }
+  .opt-icon { font-size: 10px; margin-top: 1px; flex-shrink: 0; }
+  .opt-correct-selected   { background: #d4edda; border-color: #28a745; color: #155724; }
+  .opt-wrong-selected     { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+  .opt-correct-unselected { background: #cce5ff; border-color: #004085; color: #004085; }
+  .answer-key { font-size: 11px; color: #555; margin-top: 4px; padding-top: 4px; border-top: 1px dashed #ccc; }
+  .nat-row { font-size: 12px; padding: 6px 0; border-top: 1px dashed #ccc; margin-top: 6px; }
+  .correct { color: #28a745; }
+  .wrong   { color: #dc3545; }
+  .skipped { color: #888; }
+
+  /* Legend */
+  .legend { display: flex; gap: 14px; font-size: 11px; margin: 10px 18px; flex-wrap: wrap; }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+
+  /* Footer */
+  .doc-footer { background: #1a3e6e; color: #aac; text-align: center; padding: 10px; font-size: 10px; margin-top: 20px; }
+
+  /* Print */
+  @media print {
+    body { font-size: 11px; }
+    .no-print { display: none !important; }
+    .question-block { page-break-inside: avoid; }
+    @page { margin: 15mm; }
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>GATE 2025 — Official Answer Sheet</h1>
+  <p>Computer Science and Information Technology (CS) &nbsp;|&nbsp; Organising Institute: IIT Roorkee</p>
+  <p style="margin-top:4px;color:#cde;">Generated: ${new Date().toLocaleString()}</p>
+</div>
+
+<div class="cand-box">
+  <div class="field"><strong>Name:</strong> ${candidateInfo.name}</div>
+  <div class="field"><strong>Roll Number:</strong> ${candidateInfo.roll}</div>
+  <div class="field"><strong>Gmail:</strong> ${candidateInfo.email}</div>
+  <div class="field"><strong>Time Taken:</strong> ${fmtSeconds(lastTimeTaken)}</div>
+  <div class="field" style="grid-column:span 2;">
+    <strong>Estimated Score:</strong> &nbsp; <span class="score-big">${lastScore.toFixed(2)} / 100</span>
+    &nbsp;&nbsp; <span style="font-size:11px;color:#555;">(${totals.answered} attempted out of ${totals.total})</span>
+  </div>
+</div>
+
+<!-- Print button -->
+<div class="no-print" style="text-align:center;margin:12px 0;">
+  <button onclick="window.print()" style="background:#1a3e6e;color:#fff;border:none;padding:10px 28px;border-radius:5px;font-size:13px;font-weight:bold;cursor:pointer;margin-right:8px;">
+    🖨 Print / Save as PDF
+  </button>
+  <button onclick="window.close()" style="background:#6c757d;color:#fff;border:none;padding:10px 20px;border-radius:5px;font-size:13px;cursor:pointer;">
+    ✕ Close
+  </button>
+  <p style="font-size:11px;color:#888;margin-top:6px;">In the print dialog → choose <strong>"Save as PDF"</strong> as the destination.</p>
+</div>
+
+<!-- Legend -->
+<div class="legend no-print">
+  <span><span style="background:#d4edda;border:1px solid #28a745;padding:2px 8px;border-radius:3px;">▶ Option</span> Your correct answer</span>
+  <span><span style="background:#f8d7da;border:1px solid #dc3545;padding:2px 8px;border-radius:3px;">▶ Option</span> Your wrong answer</span>
+  <span><span style="background:#cce5ff;border:1px solid #004085;padding:2px 8px;border-radius:3px;">○ Option</span> Correct (you skipped)</span>
+</div>
+
+<div class="summary-wrap">
+  <h2>Section-wise Summary</h2>
+  <table>
+    <tr><th>Section</th><th>Total</th><th>Answered</th><th>Not Answered</th><th>Marked</th><th>Not Visited</th></tr>
+    ${summaryRows}
+  </table>
+</div>
+
+<div class="questions-wrap" style="margin-top:16px;">
+  <h2>Detailed Question-wise Responses</h2>
+  ${questionsHtml}
+</div>
+
+<div class="doc-footer">
+  GATE 2025 CBT Answer Sheet &nbsp;|&nbsp; ${candidateInfo.name} &nbsp;|&nbsp; Roll: ${candidateInfo.roll} &nbsp;|&nbsp; This is a computer-generated document.
+</div>
+
+</body>
+</html>`;
+
+  // Open in new window and trigger print dialog
+  const win = window.open('', '_blank', 'width=900,height=700,scrollbars=yes');
+  if (!win) {
+    alert('Pop-up blocked! Please allow pop-ups for this page and try again.');
+    return;
+  }
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  // Small delay so the browser renders before print dialog
+  setTimeout(() => win.print(), 800);
+}
+
+// ─────────────── AGREEMENT CHECK ───────────────
+document.getElementById("agree-check").addEventListener("change", function() {
+  document.getElementById("start-exam-btn").disabled = !this.checked;
+});
+
+function startExam() {
+  document.getElementById("instruction-screen").style.display = "none";
+  examStarted = true;
+  renderSectionTabs();
+  renderQuestion();
+  startTimer();
+}
+
+// ─────────────── SAVE SUBMISSION ON FINAL SUBMIT ───────────────
+finalSubmit = function() {
+  // Don't re-run if already submitted
+  clearInterval(timerInterval);
+  closeModal("submit-modal");
+
+  let score = 0;
+  allQ.forEach(q => {
+    const s = qStates[q.id];
+    const ans = s.answer;
+    if (ans === null || (Array.isArray(ans) && ans.length === 0)) return;
+    if (q.type === "MCQ") {
+      score += ans === q.answer ? q.marks : -q.neg;
+    } else if (q.type === "NAT") {
+      score += parseFloat(ans) === q.answer ? q.marks : -q.neg;
+    } else if (q.type === "MSQ") {
+      const correct = Array.isArray(q.answer) ? q.answer : [q.answer];
+      const sel = Array.isArray(ans) ? ans : [ans];
+      if (sel.every(x=>correct.includes(x)) && correct.every(x=>sel.includes(x))) score += q.marks;
+    }
+  });
+  lastScore = score;
+
+  const elapsed = 3*3600 - timerSec;
+  lastTimeTaken = elapsed;
+
+  const { rows, totals } = buildSummary();
+  let html = `<tr><th>Section</th><th style='color:#28a745'>Answered</th><th style='color:#dc3545'>Not Answered</th><th style='color:#6f42c1'>Marked</th><th style='color:#888'>Not Visited</th></tr>`;
+  rows.forEach(r => { html += `<tr><td>${r.name}</td><td>${r.answered}</td><td>${r.notAns}</td><td>${r.marked}</td><td>${r.notVis}</td></tr>`; });
+  html += `<tr style='font-weight:bold;background:#dce8f5'><td>Estimated Score</td><td colspan='4' style='color:${score>=25?"#28a745":"#c00"};font-size:16px'>${score.toFixed(2)} / 100</td></tr>`;
+  document.getElementById("result-table").innerHTML = html;
+  document.getElementById("result-congrats").textContent = `Thank you, ${candidateInfo.name || "Candidate"}! Your exam is submitted.`;
+
+  // Persist to localStorage
+  saveSubmission({
+    ...candidateInfo,
+    status: "submitted",
+    score,
+    attempted: totals.answered,
+    timeTaken: elapsed,
+    qStates: allQ.map(q => ({ id: q.id, answer: qStates[q.id].answer, status: qStates[q.id].status }))
+  });
+
+  document.getElementById("result-modal").classList.remove("hidden");
+};
+</script>
+</body>
+</html>
